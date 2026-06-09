@@ -26,6 +26,6 @@ while True:
     )
 
     reply=response.choices[0].message.content
-    history.append({"role":"system","content":reply})
+    history.append({"role":"assistant","content":reply})
 
     print(f"\n AI_STUDENT:{reply}\n")
