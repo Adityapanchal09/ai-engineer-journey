@@ -1,0 +1,60 @@
+Scheduling algorithms are methods used by operating systems to determine the order in which processes or tasks are executed.
+
+Common scheduling algorithms include:
+- First-Come, First-Served (FCFS): Processes are handled in the order they arrive.
+- Shortest Job Next (SJN): The process with the smallest execution time is selected first.
+- Round Robin (RR): Each process gets a fixed time slice in turn, improving responsiveness.
+- Priority Scheduling: Processes are chosen based on priority values; higher priority tasks run before lower priority ones.
+- Multilevel Queue Scheduling: Processes are grouped into separate queues based on type or priority, each with its own scheduling policy.
+
+Key considerations for scheduling algorithms are throughput, turnaround time, waiting time, and fairness. Different algorithms balance these metrics based on system goals, such as minimizing latency or maximizing resource utilization.
+
+Other scheduling techniques and considerations include:
+- Multi-Level Feedback Queue Scheduling: Similar to multilevel queue scheduling but allows processes to move between queues based on their observed behavior and CPU bursts.
+- Earliest Deadline First (EDF): Tasks with the earliest deadlines are scheduled first, useful in real-time operating systems where timing constraints are critical.
+- Rate Monotonic Scheduling (RMS): A fixed-priority algorithm for periodic tasks where shorter period tasks have higher priority.
+- Fair-Share Scheduling: CPU time is divided among users or groups to ensure no single user monopolizes resources.
+- Weighted Fair Queuing: Packets or tasks receive service proportional to assigned weights, useful for network scheduling and resource allocation.
+
+Scheduling is also affected by these factors:
+- Preemption: Whether a running process can be interrupted to start another process with higher priority or different policy.
+- Context switch overhead: Frequent switching can improve responsiveness but adds processing cost and may reduce throughput.
+- I/O-bound vs CPU-bound processes: I/O-bound processes often need shorter bursts and quick scheduling to avoid waiting; CPU-bound processes require longer runs and can benefit from time-sharing.
+- Starvation: A lower priority process may wait indefinitely if higher priority processes continually consume the CPU.
+- Aging: A technique to gradually increase the priority of waiting processes to prevent starvation.
+
+In multiprocessor systems, scheduling becomes more complex:
+- Symmetric multiprocessing (SMP): All processors share the same memory and scheduling decisions can be made globally or per processor.
+- Processor affinity: Keeping a process on the same CPU can improve cache performance.
+- Load balancing: Distributing processes across processors to avoid idle cores and improve utilization.
+- Gang scheduling: Related threads or processes are scheduled to run simultaneously on different processors to improve performance for parallel applications.
+
+Modern operating systems often combine multiple scheduling policies:
+- Desktop and mobile OSes may use multilevel feedback queues for general-purpose workload, while also applying real-time policies for audio, video, or control tasks.
+- Server systems may use variants of time-sharing and priority scheduling to give interactive processes responsiveness while maintaining throughput for batch jobs.
+- Cloud environments can use container or virtual machine scheduling layered on top of host OS scheduling to optimize for multi-tenant fairness and service-level agreements.
+
+Evaluating scheduling algorithms typically involves:
+- Simulation or trace-driven analysis to compare average waiting time, turnaround time and response time.
+- Workload characterization, including the mix of short and long jobs, interactive versus batch jobs, and periodic versus aperiodic tasks.
+- Sensitivity to system load and resource contention, since performance may vary greatly under light versus heavy load.
+
+Examples of scheduling in real systems:
+- UNIX variants often use multilevel feedback queue scheduling with dynamic priority adjustments.
+- Windows uses a hybrid approach that includes priority classes, quantum-based round robin, and dynamic adjustment for foreground applications.
+- Linux CFS (Completely Fair Scheduler) aims to share CPU time fairly among processes by maintaining a virtual runtime and selecting the process with the smallest runtime.
+
+Good scheduling aims to:
+- maximize CPU utilization by keeping the processor busy,
+- minimize turnaround time for jobs,
+- minimize waiting time for processes in the ready queue,
+- minimize response time for interactive tasks,
+- ensure fairness across different users and workloads,
+- meet deadlines for real-time tasks when required.
+
+The interaction between scheduling and system design is important:
+- In embedded systems, deterministic scheduling may be more important than average throughput.
+- In desktop and mobile systems, responsiveness and battery efficiency are key concerns.
+- In data centers, scheduler policies must often consider energy consumption, thermal limits, and quality of service.
+
+Understanding scheduling algorithms helps in designing systems that can adapt to varied workloads and meet performance goals. By choosing, tuning, or combining scheduling policies, operating systems can better manage resources and deliver predictable, fair behavior across tasks and users.
