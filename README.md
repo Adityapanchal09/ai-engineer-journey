@@ -49,6 +49,14 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 
 ---
 
+### Day 7: Persistence + Quiz Generator Web App
+- `study_app.py` (upgraded) — Chat history now saved to `chat_history.json` and reloaded automatically on app restart
+- `quiz_app.py` — Full interactive quiz web app: AI-generated MCQs, clickable radio options, instant feedback with explanations, score tracking, and a persistent results log saved to `quiz_log.json`
+
+**Concepts:** JSON file persistence (`json.dump`/`json.load`), `os.path.exists()` safety checks, multi-variable `session_state` state machines, `st.radio`, conditional UI flow (question → feedback → next), debugging real Streamlit rerun bugs
+
+---
+
 ## 📈 Progress Tracker
 
 | Day | Project | Status |
@@ -58,11 +66,14 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 | 4 | Quiz Generator (structured output) | ✅ |
 | 5 | Document Reader (file handling) | ✅ |
 | 6 | Streamlit Web App | ✅ |
-| 7+ | RAG, agents, deployment | 🔄 In progress |
+| 7 | Persistence + Quiz Web App | ✅ |
+| 8+ | Advanced prompting, embeddings, RAG | 🔄 In progress |
 
 ## 🎯 Roadmap
 
-- [ ] Vector databases & RAG (chat with PDFs)
+- [ ] Advanced prompt engineering techniques
+- [ ] Embeddings & vector databases
+- [ ] RAG — chat with PDFs
 - [ ] AI agents with tool use
 - [ ] Deploy apps to Streamlit Community Cloud
 - [ ] Fine-tuning basics
