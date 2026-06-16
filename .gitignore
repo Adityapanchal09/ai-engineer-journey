@@ -2,3 +2,5 @@
 __pycache__/
 *.pyc
 .venv/
+quiz_log.json
+chat_history.json
