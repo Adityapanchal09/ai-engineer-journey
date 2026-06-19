@@ -57,6 +57,13 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 
 ---
 
+### Day 8: Prompt Chaining — Notes Processing Pipeline
+- `notes_pipeline.py` — Takes raw, messy/unstructured notes and runs them through a 4-step AI pipeline: clean grammar → summarize → extract key points (JSON) → generate exam questions (JSON), saving the full result to `pipeline_output.json`
+
+**Concepts:** Prompt chaining (output of one AI call feeding into the next), reusable `ask()` helper function, multi-step pipelines, choosing the right upstream input for each step, debugging `json.dump()` argument order
+
+---
+
 ## 📈 Progress Tracker
 
 | Day | Project | Status |
@@ -67,11 +74,11 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 | 5 | Document Reader (file handling) | ✅ |
 | 6 | Streamlit Web App | ✅ |
 | 7 | Persistence + Quiz Web App | ✅ |
-| 8+ | Advanced prompting, embeddings, RAG | 🔄 In progress |
+| 8 | Prompt Chaining Pipeline | ✅ |
+| 9+ | Embeddings, vector databases, RAG | 🔄 In progress |
 
 ## 🎯 Roadmap
 
-- [ ] Advanced prompt engineering techniques
 - [ ] Embeddings & vector databases
 - [ ] RAG — chat with PDFs
 - [ ] AI agents with tool use
