@@ -1,12 +1,13 @@
 # 🤖 AI Engineer Journey
 
-A daily learning log documenting my path to becoming an AI Engineer — building real, working projects using Python, the Groq API (LLaMA 3.3 70B), REST APIs, and Streamlit.
+A daily learning log documenting my path to becoming an AI Engineer — building real, working projects using Python, the Groq API (LLaMA 3.3 70B), REST APIs, Streamlit, and embeddings.
 
 ## 🛠️ Tech Stack
 
 - **Python 3.12**
 - **Groq API** (LLaMA 3.3 70B Versatile)
 - **Streamlit** — web UI
+- **sentence-transformers** — local embeddings
 - **python-dotenv** — environment management
 - **requests** — REST API calls
 
@@ -64,6 +65,14 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 
 ---
 
+### Day 9: Embeddings + Semantic Search
+- `embedd_compare.py` — Generates embeddings for text and compares meaning similarity using cosine similarity (e.g. "deadlock" vs "stuck waiting" scores high, vs "pizza" scores near zero)
+- `semantic_search.py` — Converts a knowledge base of study notes into embeddings and performs natural-language search, finding the most relevant notes by MEANING even when the search query shares no exact words with the source text
+
+**Concepts:** Sentence embeddings (`sentence-transformers`, local/free, no API key), vectors as numerical representations of meaning, cosine similarity, `.item()` tensor unwrapping, semantic vs keyword search — the foundational concept behind RAG
+
+---
+
 ## 📈 Progress Tracker
 
 | Day | Project | Status |
@@ -75,12 +84,13 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 | 6 | Streamlit Web App | ✅ |
 | 7 | Persistence + Quiz Web App | ✅ |
 | 8 | Prompt Chaining Pipeline | ✅ |
-| 9+ | Embeddings, vector databases, RAG | 🔄 In progress |
+| 9 | Embeddings + Semantic Search | ✅ |
+| 10+ | Vector databases, RAG (chat with PDFs) | 🔄 In progress |
 
 ## 🎯 Roadmap
 
-- [ ] Embeddings & vector databases
-- [ ] RAG — chat with PDFs
+- [ ] Vector databases (ChromaDB/FAISS)
+- [ ] Full RAG pipeline — chat with PDFs
 - [ ] AI agents with tool use
 - [ ] Deploy apps to Streamlit Community Cloud
 - [ ] Fine-tuning basics
