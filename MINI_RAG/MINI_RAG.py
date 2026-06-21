@@ -19,12 +19,20 @@ def load_and_chunk(filepath):
 
 #print(load_and_chunk(r"C:\Users\ADITYA PANCHAL\ai_engineer\MINI_RAG\notes.txt"))
 
-def retrieve_relevant_chunks(query,chunks,chunk_embeddings,top_k=3):
+def retrieve_relevant_chunks(query,chunks,chunk_embeddings,top_k=3,threshold=0.3):
     query_embedding=embedd_model.encode(query)
     similarities=util.cos_sim(query_embedding,chunk_embeddings)[0]
     top_indices=similarities.argsort(descending=True)[:top_k]
-    return [chunks[i] for i in top_indices]
 
+     # Only keep chunks above the similarity threshold
+    relevant = []
+    for i in top_indices:
+        score = similarities[i].item()
+        if score >= threshold:
+            relevant.append(chunks[i])
+    
+    return relevant  # could be empty list if nothing is relevant enough!
+    
 
 
 def answer_question(query,relevant_chunks):
@@ -57,10 +65,12 @@ while True:
 
     relevant=retrieve_relevant_chunks(query,chunks,chunk_embeddings)
 
-
-    print("\n📌 Retrieved chunks:")
-    for c in relevant:
-        print(f"  - {c[:80]}...")
-
-    answer = answer_question(query, relevant)
-    print(f"\n🤖 Answer: {answer}\n")
+    if relevant:
+        print("\n📌 Retrieved chunks:")
+        for c in relevant:
+            print(f"  - {c[:80]}...")
+    if not relevant:
+        print("\n🤖 Answer: Not found in the document (no relevant chunks found).\n")
+    else:
+        answer = answer_question(query, relevant)
+        print(f"\n🤖 Answer: {answer}\n")
