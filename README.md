@@ -1,6 +1,6 @@
 # 🤖 AI Engineer Journey
 
-A daily learning log documenting my path to becoming an AI Engineer — building real, working projects using Python, the Groq API (LLaMA 3.3 70B), REST APIs, Streamlit, and embeddings.
+A daily learning log documenting my path to becoming an AI Engineer — building real, working projects using Python, the Groq API (LLaMA 3.3 70B), REST APIs, Streamlit, embeddings, and RAG.
 
 ## 🛠️ Tech Stack
 
@@ -73,6 +73,13 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 
 ---
 
+### Day 10: Mini RAG — Chat With Your Notes
+- `mini_rag.py` — A complete Retrieval-Augmented Generation pipeline built from scratch: loads a `.txt` document, splits it into chunks, embeds every chunk locally, retrieves only the most relevant chunks for a given question via cosine similarity, and sends ONLY that context to the AI for a grounded answer — instead of sending the entire document every time
+
+**Concepts:** Document chunking (paragraph-based + fixed-size with overlap), batch embedding, semantic retrieval, context-grounded generation, list comprehensions, similarity thresholds to prevent answering from irrelevant context, hallucination prevention via "answer only from context" prompting
+
+---
+
 ## 📈 Progress Tracker
 
 | Day | Project | Status |
@@ -85,12 +92,14 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 | 7 | Persistence + Quiz Web App | ✅ |
 | 8 | Prompt Chaining Pipeline | ✅ |
 | 9 | Embeddings + Semantic Search | ✅ |
-| 10+ | Vector databases, RAG (chat with PDFs) | 🔄 In progress |
+| 10 | Mini RAG (Chat With Your Notes) | ✅ |
+| 11+ | Vector databases, agents, deployment | 🔄 In progress |
 
 ## 🎯 Roadmap
 
-- [ ] Vector databases (ChromaDB/FAISS)
-- [ ] Full RAG pipeline — chat with PDFs
+- [ ] Vector databases (ChromaDB/FAISS) for scaling RAG to large document sets
+- [ ] PDF support for RAG (beyond .txt files)
+- [ ] Streamlit UI for mini RAG — "Chat with your PDF" web app
 - [ ] AI agents with tool use
 - [ ] Deploy apps to Streamlit Community Cloud
 - [ ] Fine-tuning basics
