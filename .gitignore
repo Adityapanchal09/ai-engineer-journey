@@ -4,4 +4,4 @@ __pycache__/
 .venv/
 quiz_log.json
 chat_history.json
-.streamlit/secrets.toml
+APPS_WITH_UI/.streamlit/secrets.toml
