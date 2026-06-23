@@ -2,8 +2,10 @@ import streamlit as st
 from groq import Groq
 from sentence_transformers import SentenceTransformer,util
 from dotenv import load_dotenv
+import os
 
-load_dotenv()
+#load_dotenv()
+os.environ["GROQ_API_KEY"] = st.secrets["GROQ_API_KEY"]
 
 client=Groq()
 
