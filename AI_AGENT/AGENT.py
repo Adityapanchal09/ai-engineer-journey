@@ -27,12 +27,54 @@ def read_file(filepath:str)->str:
     except:
         return "Error:File not found!"
 
+import requests
+
+def get_joke(topic:str)->str:
+    try:
+        response=requests.get("https://official-joke-api.appspot.com/random_joke")
+        joke=response.json
+        return f"{joke['setup']}.....{joke['punchline']}"
+    except:
+        return "Could not fetch joke"
+
+def summarize_text(text:str)->str:
+    response=client.chat.completions.create(
+        model="llama-3.3-70b-versatile",
+        messages=[
+            {"role":"system","content":"summarize in 2 sentences"},
+            {"role":"user","content":text}
+        ]
+    )    
+
+    return response.choices[0].message.content
+
+from sentence_transformers import SentenceTransformer,util
+
+search_model=SentenceTransformer("all-MiniLM-L6-v2")
+
+knowledge_base=[
+    "Deadlock occurs when processes wait for each other forever",
+    "Paging divides memory into fixed size blocks",
+    "FCFS is the simplest CPU scheduling algorithm",
+    "Round robin gives each process a fixed time slice",
+]
+kb_embeddings=search_model.encode(knowledge_base)   
+
+def search_notes(query:str)->str:
+    q_emb=search_model.encode(query)
+    sims=util.cos_sim(q_emb,kb_embeddings)[0]
+    top_idx=sims.argsort(descending=True)[:2]
+    results=[knowledge_base[i] for i in top_idx]
+    return "\n".join(results)
 
 #---Tool Registery---
 TOOLS={
     "calculator":calculator,
     "word_counter":word_counter,
-    "file_reader":read_file
+    "file_reader":read_file,
+    "get_joke":get_joke,
+    "summarize_text":summarize_text,
+    "search_notes":search_notes
 }            
 
 #Tools Description sent to the AI---
@@ -44,6 +86,9 @@ Availabe Tools:
 -calculator: evaluates with expressions, Input:math expression "2+2" or "15*8"
 -word_counter: counts word and characters. Input:any text string
 -read_file:reads a text file. Input:file path
+-get_joke:fetches a random joke ,Input:any topic string
+-summarize_text:summarizes a long text in 2 sentences. Input:the text to summarize
+-search_notes:searches  your os notes semantically. Input:a question about os concepts
 
 If you dont need a tool respond normally with your answer
 """
@@ -94,3 +139,6 @@ run_agent("what is 1234 multiplied by 5678")
 run_agent("count the words in:the quick brown fox runs over the lazy dog")
 run_agent("What is the capital of France?") #no tool needed
 #run_agent("C:\Users\ADITYA PANCHAL\ai_engineer\MINI_RAG\notes.txt")
+run_agent("tell me a joke")
+run_agent("Search my notes for information about memory management")
+run_agent("what si 144 divided by 12 ,then tell me a joke")#multi tool
