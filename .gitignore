@@ -5,3 +5,4 @@ __pycache__/
 quiz_log.json
 chat_history.json
 APPS_WITH_UI/.streamlit/secrets.toml
+AI_AGENT/agent_memory.json
