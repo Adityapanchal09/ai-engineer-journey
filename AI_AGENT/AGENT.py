@@ -1,6 +1,6 @@
 from groq import Groq
 from dotenv import load_dotenv
-import json,math
+import json,math,os
 
 load_dotenv()
 client=Groq()
@@ -67,6 +67,25 @@ def search_notes(query:str)->str:
     results=[knowledge_base[i] for i in top_idx]
     return "\n".join(results)
 
+
+MEMORY_FILE="agent_memory.json"
+
+def load_memory():
+    if os.path.exists(MEMORY_FILE):
+        with open(MEMORY_FILE) as f:
+            return json.load(f)
+    return {}
+
+def save_memory(key,value):
+    memory=load_memory()
+    memory[key]=value
+    with open(MEMORY_FILE,"w") as f:
+        json.dump(memory,f,indent=2) 
+
+def recall_memory(key):
+    memory=load_memory()
+    return memory.get(key,"nothing stored for that key")
+
 #---Tool Registery---
 TOOLS={
     "calculator":calculator,
@@ -74,7 +93,10 @@ TOOLS={
     "file_reader":read_file,
     "get_joke":get_joke,
     "summarize_text":summarize_text,
-    "search_notes":search_notes
+    "search_notes":search_notes,
+    "save_memory":lambda x:save_memory(*x.split("|",1)) or "Saved!",
+    "recall_memory":recall_memory
+
 }            
 
 #Tools Description sent to the AI---
@@ -89,16 +111,24 @@ Availabe Tools:
 -get_joke:fetches a random joke ,Input:any topic string
 -summarize_text:summarizes a long text in 2 sentences. Input:the text to summarize
 -search_notes:searches  your os notes semantically. Input:a question about os concepts
+-save_memory:# In TOOL_DESCRIPTIONS change save_memory description to:
+- save_memory: saves a fact permanently. Input format MUST be 'key|value' where key is a simple label. Example: 'name|Aditya' or 'learning|AI Engineering'
+-recall_memory:recalls a saved fact. Input:the key
 
 If you dont need a tool respond normally with your answer
 """
+conversation_history=[] #lives outside run_agent()
 
 def run_agent(user_task):
     print(f"\n TASk:{user_task}")
+
+    #Add new task to shared history
+    conversation_history.append({"role":"user","content":user_task})
+
     messages=[
         {"role":"system","content":TOOLS_DESCRIPTION},
         {"role":"user","content":user_task}
-    ]
+    ]+conversation_history #include all previous exchanges,
 
     #Agent loop max 5 iterations to prevent for infinite loops
     for i in range(5):
@@ -112,7 +142,9 @@ def run_agent(user_task):
 
         # try to parse as tool call
         try:
-            tool_call=json.loads(reply)
+            #tool_call=json.loads(reply)
+            first_line = reply.strip().split("\n")[0]
+            tool_call = json.loads(first_line)
             tool_name=tool_call["tool"]
             tool_input=tool_call["input"]
 
@@ -130,15 +162,18 @@ def run_agent(user_task):
 
         except json.JSONDecodeError:
             # not a tool call this is a final answer
+            #save final answer to shared history
             print(f"\nanswer:{reply}")
+            conversation_history.append({"role":"assistant","content":reply})
             break
 
 
 #---test the agent----
-run_agent("what is 1234 multiplied by 5678")
+'''run_agent("what is 1234 multiplied by 5678")
 run_agent("count the words in:the quick brown fox runs over the lazy dog")
 run_agent("What is the capital of France?") #no tool needed
-#run_agent("C:\Users\ADITYA PANCHAL\ai_engineer\MINI_RAG\notes.txt")
 run_agent("tell me a joke")
 run_agent("Search my notes for information about memory management")
-run_agent("what si 144 divided by 12 ,then tell me a joke")#multi tool
+run_agent("what si 144 divided by 12 ,then tell me a joke")#multi tool'''
+#run_agent("Remember that my name is Aditya and i am learning AI Engineering")
+run_agent("what is my name and what i am learning?")
