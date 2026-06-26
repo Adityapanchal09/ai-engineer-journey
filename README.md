@@ -1,9 +1,9 @@
 # 🤖 AI Engineer Journey
 
-A daily learning log documenting my path to becoming an AI Engineer — building real, working projects using Python, the Groq API (LLaMA 3.3 70B), REST APIs, Streamlit, embeddings, and RAG.
+A daily learning log documenting my path to becoming an AI Engineer — building real, working projects using Python, the Groq API (LLaMA 3.3 70B), REST APIs, Streamlit, embeddings, RAG, and AI Agents.
 
 ## 🌐 Live Demo
-**Chat With Your Notes (RAG App):** [Try it here →](your-streamlit-url-here)
+**Chat With Your Notes (RAG App):** [Try it here →](https://ai-engineer-journey-my-mini-rag.streamlit.app/)
 
 ## 🛠️ Tech Stack
 
@@ -84,20 +84,41 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 ---
 
 ### Day 11: RAG Web App — Chat With Your Notes (Streamlit)
-- `RAG_WEB.py` — Full Streamlit web app wrapping the Day 10 RAG pipeline: upload any .txt file via browser, process it into chunks and embeddings, chat with it via a full conversation interface with retrieved chunks shown in an expander, conversation-aware follow-up questions using query expansion
+- `RAG_WEB.py` — Full Streamlit web app wrapping the Day 10 RAG pipeline: upload any .txt file via browser, process into chunks and embeddings, chat with full conversation interface, retrieved chunks shown in expander, conversation-aware follow-up questions using query expansion
 
-**Concepts:** `st.file_uploader()`, `@st.cache_resource` for model caching, `st.expander()`, query expansion using chat history for context-aware retrieval, debugging multi-turn RAG conversations
+**Concepts:** `st.file_uploader()`, `@st.cache_resource` for model caching, `st.expander()`, query expansion using chat history for context-aware retrieval
 
 ---
 
 ### Day 12: Deployment — Live on Streamlit Cloud
-- `RAG_WEB.py` deployed to Streamlit Community Cloud — **publicly accessible, free, no setup needed for users**
+- `RAG_WEB.py` deployed to Streamlit Community Cloud — publicly accessible, free, no setup needed for users
 - Added `requirements.txt` for dependency management
-- Configured Streamlit secrets for secure API key handling (no .env file in production)
+- Configured Streamlit secrets for secure API key handling
 
-**Live URL:** [Chat With Your Notes →](your-streamlit-url-here)
+**Live URL:** [Chat With Your Notes →](https://ai-engineer-journey-my-mini-rag.streamlit.app/)
 
-**Concepts:** Streamlit Community Cloud deployment, `requirements.txt` best practices, secrets management in production (vs .env locally), GitHub push protection for secret scanning, rotating exposed API keys
+**Concepts:** Streamlit Community Cloud deployment, `requirements.txt` best practices, secrets management in production, GitHub push protection for secret scanning, rotating exposed API keys
+
+---
+
+### Day 13: AI Agents — First Agent with Tool Use
+- `simple_agent.py` — A working AI agent with 3 tools: calculator (eval math), word counter, and file reader. Agent autonomously decides which tool to call, executes it, feeds the result back, and loops until the task is complete using the ReAct pattern
+
+**Concepts:** AI agents, tool registry, ReAct loop (Reason → Act → Observe), tool calling vs direct answering, JSON-based tool call parsing, max iteration safety limit
+
+---
+
+### Day 14: Expanded Agent — REST API + Semantic Search + Summarizer Tools
+- `AGENT.py` (expanded) — Agent now has 6 tools: calculator, word counter, file reader, joke/fact fetcher (REST API), AI summarizer (prompt chaining as a tool), and semantic notes search (embeddings as a tool). Successfully chains multiple tools in sequence for complex tasks
+
+**Concepts:** REST API as agent tool, prompt chaining inside tool functions, embeddings inside tool functions, multi-tool chaining (agent uses calculator then joke tool automatically), debugging `set` vs `list` for sentence-transformers
+
+---
+
+### Day 15: Agent Memory — Short-term + Long-term Persistence
+- `AGENT.py` (with memory) — Agent now has two memory systems: short-term (shared `conversation_history` list maintains context across multiple tasks in one session) and long-term (saves facts to `agent_memory.json` that persists across complete restarts — agent recalls your name and preferences without being told again)
+
+**Concepts:** Short-term vs long-term agent memory, shared conversation history across tasks, JSON-based persistent memory, `save_memory`/`recall_memory` tools, `key|value` input parsing with lambda, multi-tool JSON response parsing (taking first line only), debugging tool output truncation
 
 ---
 
@@ -116,15 +137,28 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 | 10 | Mini RAG (terminal) | ✅ |
 | 11 | RAG Web App (Streamlit) | ✅ |
 | 12 | Deployed to Streamlit Cloud | ✅ |
-| 13+ | AI Agents with tool use | 🔄 In progress |
+| 13 | AI Agent with Tool Use | ✅ |
+| 14 | Expanded Agent (6 tools) | ✅ |
+| 15 | Agent Memory (short + long term) | ✅ |
+| 16+ | Web search tool, advanced agents | 🔄 In progress |
+
+## 🧩 DSA Track (NeetCode 150)
+
+| Day | Problem | Pattern | Status |
+|-----|---------|---------|--------|
+| 13 | Contains Duplicate | Hash Set | ✅ |
+| 14 | Valid Anagram | Hash Map | ✅ |
+| 15 | Two Sum | Hash Map | ✅ |
+| 16+ | Group Anagrams | Hash Map | 🔄 |
 
 ## 🎯 Roadmap
 
-- [ ] AI agents with tool use
+- [ ] Web search tool for agent
 - [ ] ChromaDB vector database for scaling RAG
 - [ ] PDF support for RAG
 - [ ] Fine-tuning basics
-- [ ] Portfolio polish + more live demos
+- [ ] More live deployed apps
+- [ ] Portfolio polish
 
 ## 🚀 Setup
 
