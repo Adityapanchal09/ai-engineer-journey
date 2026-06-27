@@ -32,7 +32,7 @@ import requests
 def get_joke(topic:str)->str:
     try:
         response=requests.get("https://official-joke-api.appspot.com/random_joke")
-        joke=response.json
+        joke=response.json()
         return f"{joke['setup']}.....{joke['punchline']}"
     except:
         return "Could not fetch joke"
@@ -86,6 +86,31 @@ def recall_memory(key):
     memory=load_memory()
     return memory.get(key,"nothing stored for that key")
 
+import time 
+from duckduckgo_search import DDGS
+
+def websearch(query:str)->str:
+    try:
+        # 1. Add a 1.5 second delay so DuckDuckGo doesn't block the rapid requests
+        time.sleep(1.5)
+
+        with DDGS() as ddgs:
+            results=list(ddgs.text(query,max_results=5))
+        if not results:
+            return "NO result found.Try simplifying your query to just 2 or 3 core keywords"
+
+        #format top 3 reults
+        output=[]
+
+        for r in results[:3]:
+            # Safely grab the text just in case a field is missing
+            title = r.get('title', 'Unknown Title')
+            body = r.get('body', 'No summary available.')
+            output.append(f"Title:{r['title']}\nSummary:{r['body']}")
+        return "\n".join(output)
+    except Exception as e:
+        return f"Search Failed:{str(e)}"        
+
 #---Tool Registery---
 TOOLS={
     "calculator":calculator,
@@ -95,7 +120,8 @@ TOOLS={
     "summarize_text":summarize_text,
     "search_notes":search_notes,
     "save_memory":lambda x:save_memory(*x.split("|",1)) or "Saved!",
-    "recall_memory":recall_memory
+    "recall_memory":recall_memory,
+    "websearch":websearch
 
 }            
 
@@ -114,6 +140,7 @@ Availabe Tools:
 -save_memory:# In TOOL_DESCRIPTIONS change save_memory description to:
 - save_memory: saves a fact permanently. Input format MUST be 'key|value' where key is a simple label. Example: 'name|Aditya' or 'learning|AI Engineering'
 -recall_memory:recalls a saved fact. Input:the key
+-websearch:searches the web for current information. Input:search query string
 
 If you dont need a tool respond normally with your answer
 """
@@ -140,33 +167,39 @@ def run_agent(user_task):
         reply=response.choices[0].message.content.strip()
 
 
-        # try to parse as tool call
+      # Try to parse as a tool call by extracting everything between { and }
         try:
-            #tool_call=json.loads(reply)
-            first_line = reply.strip().split("\n")[0]
-            tool_call = json.loads(first_line)
-            tool_name=tool_call["tool"]
-            tool_input=tool_call["input"]
-
-            if tool_name in TOOLS:
-                print(f"\n Using tool:{tool_name}")
-                print(f"input:{tool_input}")
-                tool_result=TOOLS[tool_name](tool_input)
-                print(f"result:{tool_result}")
-
-                #feed result back to agent
-                messages.append({"role":"assistant","content":reply})
-                messages.append({"role":"user","content":f"tool_result:{tool_result}"})
+            # Find the start and end of the JSON object in the reply
+            start_idx = reply.find('{')
+            end_idx = reply.rfind('}')
+            
+            # If we found curly braces, extract that specific chunk
+            if start_idx != -1 and end_idx != -1:
+                json_str = reply[start_idx:end_idx+1]
+                tool_call = json.loads(json_str)
+                tool_name = tool_call["tool"]
+                tool_input = tool_call["input"]
+                
+                print(f"\n Using tool: {tool_name}")
+                print(f" input: {tool_input}")
+                
+                # Execute the tool
+                tool_result = TOOLS[tool_name](tool_input)
+                print(f" result: {tool_result}")
+                
+                # Feed result back to agent
+                messages.append({"role": "assistant", "content": reply})
+                messages.append({"role": "user", "content": f"tool_result: {tool_result}"})
+                
             else:
-                print(f"\n Answer:{reply}")
-
+                # No curly braces found, this must be a pure text final answer
+                raise json.JSONDecodeError("No JSON found", reply, 0)
+                
         except json.JSONDecodeError:
-            # not a tool call this is a final answer
-            #save final answer to shared history
-            print(f"\nanswer:{reply}")
-            conversation_history.append({"role":"assistant","content":reply})
+            # Not a tool call, this is a final answer
+            print(f"\n Final Answer: {reply}")
+            conversation_history.append({"role": "assistant", "content": reply})
             break
-
 
 #---test the agent----
 '''run_agent("what is 1234 multiplied by 5678")
@@ -177,3 +210,7 @@ run_agent("Search my notes for information about memory management")
 run_agent("what si 144 divided by 12 ,then tell me a joke")#multi tool'''
 #run_agent("Remember that my name is Aditya and i am learning AI Engineering")
 run_agent("what is my name and what i am learning?")
+run_agent("What is the latest news about AI today?")
+run_agent("Search for python 3.13 new features")
+run_agent("What is the current Groq API limit?")
+run_agent("search for best practices for RAG systems in 2026")
