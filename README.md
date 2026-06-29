@@ -11,6 +11,7 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 - **Groq API** (LLaMA 3.3 70B Versatile)
 - **Streamlit** — web UI + deployment
 - **sentence-transformers** — local embeddings
+- **ddgs** — DuckDuckGo web search
 - **python-dotenv** — environment management
 - **requests** — REST API calls
 
@@ -54,17 +55,17 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 ---
 
 ### Day 7: Persistence + Quiz Generator Web App
-- `study_app.py` (upgraded) — Chat history now saved to `chat_history.json` and reloaded automatically on app restart
+- `study_app.py` (upgraded) — Chat history saved to `chat_history.json` and reloaded automatically on restart
 - `quiz_app.py` — Full interactive quiz web app with AI-generated MCQs, clickable radio options, instant feedback, score tracking, and persistent results log
 
-**Concepts:** JSON file persistence, `os.path.exists()` safety checks, multi-variable `session_state` state machines, conditional UI flow, debugging Streamlit rerun bugs
+**Concepts:** JSON file persistence, `os.path.exists()` safety checks, multi-variable `session_state` state machines, conditional UI flow
 
 ---
 
 ### Day 8: Prompt Chaining — Notes Processing Pipeline
 - `notes_pipeline.py` — Takes raw messy notes through a 4-step AI pipeline: clean grammar → summarize → extract key points (JSON) → generate exam questions (JSON)
 
-**Concepts:** Prompt chaining, reusable `ask()` helper function, multi-step pipelines, choosing the right upstream input for each step
+**Concepts:** Prompt chaining, reusable `ask()` helper function, multi-step pipelines
 
 ---
 
@@ -72,53 +73,65 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 - `embedd_compare.py` — Compares meaning similarity using cosine similarity
 - `semantic_search.py` — Natural-language search over study notes by MEANING, not keywords
 
-**Concepts:** Sentence embeddings (`sentence-transformers`), vectors as meaning, cosine similarity, `.item()` tensor unwrapping, semantic vs keyword search
+**Concepts:** Sentence embeddings (`sentence-transformers`), vectors as meaning, cosine similarity, semantic vs keyword search
 
 ---
 
 ### Day 10: Mini RAG — Chat With Your Notes (Terminal)
-- `mini_rag.py` — Complete RAG pipeline from scratch: load document → chunk → embed → retrieve relevant chunks → answer grounded in context only, with similarity threshold to prevent hallucination
+- `mini_rag.py` — Complete RAG pipeline from scratch: chunk → embed → retrieve → answer grounded in context only, with similarity threshold to prevent hallucination
 
-**Concepts:** Document chunking, batch embedding, semantic retrieval, context-grounded generation, list comprehensions, similarity thresholds, hallucination prevention
+**Concepts:** Document chunking, batch embedding, semantic retrieval, context-grounded generation, hallucination prevention
 
 ---
 
 ### Day 11: RAG Web App — Chat With Your Notes (Streamlit)
-- `RAG_WEB.py` — Full Streamlit web app wrapping the Day 10 RAG pipeline: upload any .txt file via browser, process into chunks and embeddings, chat with full conversation interface, retrieved chunks shown in expander, conversation-aware follow-up questions using query expansion
+- `RAG_WEB.py` — Full Streamlit web app: upload any .txt file, process into chunks and embeddings, chat with full conversation interface, retrieved chunks shown in expander, conversation-aware follow-up questions
 
-**Concepts:** `st.file_uploader()`, `@st.cache_resource` for model caching, `st.expander()`, query expansion using chat history for context-aware retrieval
+**Concepts:** `st.file_uploader()`, `@st.cache_resource`, `st.expander()`, query expansion using chat history
 
 ---
 
 ### Day 12: Deployment — Live on Streamlit Cloud
 - `RAG_WEB.py` deployed to Streamlit Community Cloud — publicly accessible, free, no setup needed for users
-- Added `requirements.txt` for dependency management
-- Configured Streamlit secrets for secure API key handling
 
 **Live URL:** [Chat With Your Notes →](https://ai-engineer-journey-my-mini-rag.streamlit.app/)
 
-**Concepts:** Streamlit Community Cloud deployment, `requirements.txt` best practices, secrets management in production, GitHub push protection for secret scanning, rotating exposed API keys
+**Concepts:** Streamlit Cloud deployment, `requirements.txt`, secrets management, GitHub push protection, rotating exposed API keys
 
 ---
 
 ### Day 13: AI Agents — First Agent with Tool Use
-- `simple_agent.py` — A working AI agent with 3 tools: calculator (eval math), word counter, and file reader. Agent autonomously decides which tool to call, executes it, feeds the result back, and loops until the task is complete using the ReAct pattern
+- `simple_agent.py` — Working AI agent with 3 tools: calculator, word counter, file reader. Agent autonomously decides which tool to call using the ReAct pattern
 
-**Concepts:** AI agents, tool registry, ReAct loop (Reason → Act → Observe), tool calling vs direct answering, JSON-based tool call parsing, max iteration safety limit
+**Concepts:** AI agents, tool registry, ReAct loop (Reason → Act → Observe), tool calling, JSON-based tool call parsing, max iteration safety limit
 
 ---
 
-### Day 14: Expanded Agent — REST API + Semantic Search + Summarizer Tools
-- `AGENT.py` (expanded) — Agent now has 6 tools: calculator, word counter, file reader, joke/fact fetcher (REST API), AI summarizer (prompt chaining as a tool), and semantic notes search (embeddings as a tool). Successfully chains multiple tools in sequence for complex tasks
+### Day 14: Expanded Agent — 6 Tools Including REST API + Semantic Search
+- `AGENT.py` (expanded) — Agent with 6 tools: calculator, word counter, file reader, joke fetcher (REST API), AI summarizer (prompt chaining as tool), semantic notes search (embeddings as tool). Successfully chains multiple tools in sequence
 
-**Concepts:** REST API as agent tool, prompt chaining inside tool functions, embeddings inside tool functions, multi-tool chaining (agent uses calculator then joke tool automatically), debugging `set` vs `list` for sentence-transformers
+**Concepts:** REST API as agent tool, prompt chaining inside tools, embeddings inside tools, multi-tool chaining, debugging `set` vs `list` for sentence-transformers
 
 ---
 
 ### Day 15: Agent Memory — Short-term + Long-term Persistence
-- `AGENT.py` (with memory) — Agent now has two memory systems: short-term (shared `conversation_history` list maintains context across multiple tasks in one session) and long-term (saves facts to `agent_memory.json` that persists across complete restarts — agent recalls your name and preferences without being told again)
+- `AGENT.py` (with memory) — Agent with two memory systems: short-term (shared `conversation_history` across tasks) and long-term (`agent_memory.json` persists across restarts — agent recalls name and preferences without being told again)
 
-**Concepts:** Short-term vs long-term agent memory, shared conversation history across tasks, JSON-based persistent memory, `save_memory`/`recall_memory` tools, `key|value` input parsing with lambda, multi-tool JSON response parsing (taking first line only), debugging tool output truncation
+**Concepts:** Short-term vs long-term agent memory, JSON-based persistent memory, `save_memory`/`recall_memory` tools, `key|value` input parsing, multi-tool JSON response parsing
+
+---
+
+### Day 16: Web Search Tool + Group Anagrams (First Medium DSA)
+- `AGENT.py` (with web search) — Agent gains live internet access via DuckDuckGo search tool. Can fetch current AI news, search for documentation, and answer real-time questions. Total: 9 tools
+
+**Concepts:** DuckDuckGo search integration (`ddgs` package), rate limiting with `time.sleep()`, safe result parsing with `.get()`, real-time data in agent responses
+
+---
+
+### Day 17: AI Agent Web UI (Streamlit)
+- `agent_app.py` — Full Streamlit web interface wrapping the terminal agent: chat bubbles, "Tools used" expander showing which tools fired, sidebar memory panel updating in real time, clear memory button, all 9 tools accessible from the browser
+
+**Concepts:** Converting terminal scripts to Streamlit (print→st.write, input→st.chat_input, globals→session_state, model loading→@st.cache_resource), tool name consistency between TOOLS dict and TOOLS_DESCRIPTION, avoiding double session_state appends
 
 ---
 
@@ -140,25 +153,29 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 | 13 | AI Agent with Tool Use | ✅ |
 | 14 | Expanded Agent (6 tools) | ✅ |
 | 15 | Agent Memory (short + long term) | ✅ |
-| 16+ | Web search tool, advanced agents | 🔄 In progress |
+| 16 | Web Search Tool (9 tools total) | ✅ |
+| 17 | Agent Web UI (Streamlit) | ✅ |
+| 18+ | Product of Array Except Self, more agents | 🔄 In progress |
 
 ## 🧩 DSA Track (NeetCode 150)
 
-| Day | Problem | Pattern | Status |
-|-----|---------|---------|--------|
-| 13 | Contains Duplicate | Hash Set | ✅ |
-| 14 | Valid Anagram | Hash Map | ✅ |
-| 15 | Two Sum | Hash Map | ✅ |
-| 16+ | Group Anagrams | Hash Map | 🔄 |
+| Day | Problem | Pattern | Difficulty | Status |
+|-----|---------|---------|------------|--------|
+| 13 | Contains Duplicate | Hash Set | Easy | ✅ |
+| 14 | Valid Anagram | Hash Map | Easy | ✅ |
+| 15 | Two Sum | Hash Map | Easy | ✅ |
+| 16 | Group Anagrams | Hash Map + defaultdict | Medium | ✅ |
+| 17 | Top K Frequent Elements | Hash Map + Bucket Sort | Medium | ✅ |
+| 18+ | Product of Array Except Self | Prefix/Suffix | Medium | 🔄 |
 
 ## 🎯 Roadmap
 
-- [ ] Web search tool for agent
+- [ ] Product of Array Except Self (DSA)
+- [ ] Deploy Agent web app to Streamlit Cloud
 - [ ] ChromaDB vector database for scaling RAG
 - [ ] PDF support for RAG
 - [ ] Fine-tuning basics
-- [ ] More live deployed apps
-- [ ] Portfolio polish
+- [ ] Portfolio polish + more live demos
 
 ## 🚀 Setup
 
