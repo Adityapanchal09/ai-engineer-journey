@@ -1,11 +1,22 @@
+import streamlit as st
 from groq import Groq
 from dotenv import load_dotenv
-import json,math,os
+import json,os,re,requests,time
+from ddgs import DDGS
 
 load_dotenv()
 client=Groq()
 
-#---Define Tools Plain python functions----
+st.title("AI AGENT")
+st.caption("Multi-tool web agent with websearch,calculator,memory and more")
+
+#---Session State----
+if "messages" not in  st.session_state:
+    st.session_state.messages=[]        #chat display history
+if "conversation_history" not in st.session_state:
+    st.session_state.conversation_history=[]  #agent context history 
+
+#---tool functions---
 def calculator(expression:str)->str:
     try:
         result=eval(expression)
@@ -133,7 +144,7 @@ You Have access to these tools, to use them respond with only JSON object:
 Availabe Tools:
 -calculator: evaluates with expressions, Input:math expression "2+2" or "15*8"
 -word_counter: counts word and characters. Input:any text string
--read_file:reads a text file. Input:file path
+-file_reader:reads a text file. Input:file path
 -get_joke:fetches a random joke ,Input:any topic string
 -summarize_text:summarizes a long text in 2 sentences. Input:the text to summarize
 -search_notes:searches  your os notes semantically. Input:a question about os concepts
@@ -144,73 +155,103 @@ Availabe Tools:
 
 If you dont need a tool respond normally with your answer
 """
-conversation_history=[] #lives outside run_agent()
 
-def run_agent(user_task):
-    print(f"\n TASk:{user_task}")
+#---sidebar: memory panel---
+with st.sidebar:
+    st.header("Agent Memory")
+    if os.path.exists("agent_memory.json"):
+        with open("agent_memory.json") as f:
+            memory=json.load(f)
+        for k,v in memory.items():
+            st.write(f"**{k}:** {v}")    
+    else:
+        st.write("No memories yet.")
 
-    #Add new task to shared history
-    conversation_history.append({"role":"user","content":user_task})
+    if st.button("Clear memory"):
+        if os.path.exists("agent_memory.json"):
+            os.remove("agent_memory.json")
+        st.rerun()
 
+#---chat Display---
+for msg in st.session_state.messages:
+    with st.chat_message(msg["role"]):
+        st.write(msg["content"])
+        if "tools_used" in msg and msg["tools_used"]:
+            with st.expander("Tools used"):
+                for log in msg["tools_used"]:
+                    st.write(f"**{log['tool']}** -> {log['result'][:150]}...")
+
+#---chat input + agent loop---
+user_input=st.chat_input("Ask your agent anything...")
+
+if user_input:
+    #show user input
+    with st.chat_message("user"):
+        st.write(user_input)
+    st.session_state.messages.append({"role":"user","content":user_input})
+
+    #add to conversation history (same as terminal version)
+    st.session_state.conversation_history.append({"role":"user","content":user_input})
+
+    #build messages list same as your run_agent()
     messages=[
         {"role":"system","content":TOOLS_DESCRIPTION},
-        {"role":"user","content":user_task}
-    ]+conversation_history #include all previous exchanges,
+        {"role":"user","content":user_input}]
+    tools_used=[]
+    final_reply=""
 
-    #Agent loop max 5 iterations to prevent for infinite loops
-    for i in range(5):
-        response=client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
-            messages=messages
-        )
+    with st.chat_message("Assistant"):
+        with st.spinner("Agent thinking..."):
+             # Agent loop — same logic as your for i in range(5)
+            for i in range(5):
+                response = client.chat.completions.create(
+                    model="llama-3.3-70b-versatile",
+                    messages=messages
+                )
+                reply = response.choices[0].message.content.strip()
+ 
+                # same JSON extraction logic as your AGENT.py
+                json_matches = re.findall(r'\{[^{}]+\}', reply)
 
-        reply=response.choices[0].message.content.strip()
+                if json_matches:
+                    try:
+                        tool_call = json.loads(json_matches[0])
+                        tool_name = tool_call["tool"]
+                        tool_input = tool_call["input"]
+
+                        if tool_name in TOOLS:
+                            tool_result=TOOLS[tool_name](tool_input)
+                            tools_used.append({
+                                "tool":tool_name,
+                                "input":tool_input,
+                                "result":str(tool_result)
+                            })
+
+                             # feed result back — same as terminal version
+                            messages.append({"role": "assistant", "content": reply})
+                            messages.append({"role": "user", "content": f"tool_result: {tool_result}"})
+                            continue
+ 
+                    except (json.JSONDecodeError, KeyError):
+                        pass
+ 
+                # no tool call found — this is the final answer
+                final_reply = reply
+                break
+
+            #display final answer+tools used
+            st.write(final_reply)
+            if tools_used:
+                with st.expander("Tools used"):
+                    for log in tools_used:
+                        st.write(f"**{log['tool']}** (`{log['input'][:50]}`)->{log['result'][:150]}")
 
 
-      # Try to parse as a tool call by extracting everything between { and }
-        # Try to parse as a tool call by extracting valid JSON blocks
-        try:
-            import re
-            # Find all flat JSON objects in the text
-            json_matches = re.findall(r'\{[^{}]+\}', reply)
-            
-            if json_matches:
-                # Extract and execute ONLY the first tool call
-                tool_call = json.loads(json_matches[0])
-                tool_name = tool_call["tool"]
-                tool_input = tool_call["input"]
-                
-                print(f"\n Using tool: {tool_name}")
-                print(f" input: {tool_input}")
-                
-                # Execute the tool
-                tool_result = TOOLS[tool_name](tool_input)
-                print(f" result: {tool_result}")
-                
-                # Feed result back to agent
-                messages.append({"role": "assistant", "content": reply})
-                messages.append({"role": "user", "content": f"tool_result: {tool_result}"})
-                
-            else:
-                # No JSON brackets found, this must be a pure text final answer
-                raise json.JSONDecodeError("No JSON found", reply, 0)
-                
-        except json.JSONDecodeError:
-            # Not a tool call, this is a final answer
-            print(f"\n Final Answer: {reply}")
-            conversation_history.append({"role": "assistant", "content": reply})
-            break
-
-#---test the agent----
-'''run_agent("what is 1234 multiplied by 5678")
-run_agent("count the words in:the quick brown fox runs over the lazy dog")
-run_agent("What is the capital of France?") #no tool needed
-run_agent("tell me a joke")
-run_agent("Search my notes for information about memory management")
-run_agent("what si 144 divided by 12 ,then tell me a joke")#multi tool'''
-#run_agent("Remember that my name is Aditya and i am learning AI Engineering")
-run_agent("what is my name and what i am learning?")
-run_agent("What is the latest news about AI today?")
-'''run_agent("Search for python 3.13 new features")
-run_agent("What is the current Groq API limit?")
-run_agent("search for best practices for RAG systems in 2026")'''
+            #save session state
+            st.session_state.conversation_history.append({"role":"assistant","content":final_reply})
+            st.session_state.messages.append({
+                "role":"assistant", 
+                "content":final_reply,
+                "tools_used":tools_used
+            })            
+            st.rerun()
