@@ -4,7 +4,11 @@ from dotenv import load_dotenv
 import json,os,re,requests,time
 from ddgs import DDGS
 
-load_dotenv()
+load_dotenv() # works locally
+
+#works on streamlit cloud too-checks secrets first
+if "GROQ_API_KEY" in st.secrets:
+    os.environ["GROQ_API_KEY"]=st.secrets["GROQ_API_KEY"]
 client=Groq()
 
 st.title("AI AGENT")
