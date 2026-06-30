@@ -6,3 +6,4 @@ quiz_log.json
 chat_history.json
 APPS_WITH_UI/.streamlit/secrets.toml
 AI_AGENT/agent_memory.json
+AI_AGENT/.streamlit/secrets.toml
