@@ -2,8 +2,11 @@
 
 A daily learning log documenting my path to becoming an AI Engineer — building real, working projects using Python, the Groq API (LLaMA 3.3 70B), REST APIs, Streamlit, embeddings, RAG, and AI Agents.
 
-## 🌐 Live Demo
-**Chat With Your Notes (RAG App):** [Try it here →](https://ai-engineer-journey-my-mini-rag.streamlit.app/)
+## 🌐 Live Demos
+| App | URL |
+|-----|-----|
+| 📄 Chat With Your Notes (RAG) | [Try it →](https://ai-engineer-journey-my-mini-rag.streamlit.app/) |
+| 🤖 AI Agent (Multi-tool) | [Try it →](https://ai-engineer-journey-aiagent.streamlit.app/) |
 
 ## 🛠️ Tech Stack
 
@@ -91,8 +94,8 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 
 ---
 
-### Day 12: Deployment — Live on Streamlit Cloud
-- `RAG_WEB.py` deployed to Streamlit Community Cloud — publicly accessible, free, no setup needed for users
+### Day 12: Deployment — RAG App Live on Streamlit Cloud
+- `RAG_WEB.py` deployed to Streamlit Community Cloud — publicly accessible, free, no setup needed
 
 **Live URL:** [Chat With Your Notes →](https://ai-engineer-journey-my-mini-rag.streamlit.app/)
 
@@ -108,30 +111,47 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 ---
 
 ### Day 14: Expanded Agent — 6 Tools Including REST API + Semantic Search
-- `AGENT.py` (expanded) — Agent with 6 tools: calculator, word counter, file reader, joke fetcher (REST API), AI summarizer (prompt chaining as tool), semantic notes search (embeddings as tool). Successfully chains multiple tools in sequence
+- `AGENT.py` (expanded) — Agent with 6 tools: calculator, word counter, file reader, joke fetcher (REST API), AI summarizer, semantic notes search. Successfully chains multiple tools in sequence
 
-**Concepts:** REST API as agent tool, prompt chaining inside tools, embeddings inside tools, multi-tool chaining, debugging `set` vs `list` for sentence-transformers
+**Concepts:** REST API as agent tool, prompt chaining inside tools, embeddings inside tools, multi-tool chaining
 
 ---
 
 ### Day 15: Agent Memory — Short-term + Long-term Persistence
-- `AGENT.py` (with memory) — Agent with two memory systems: short-term (shared `conversation_history` across tasks) and long-term (`agent_memory.json` persists across restarts — agent recalls name and preferences without being told again)
+- `AGENT.py` (with memory) — Agent with two memory systems: short-term (shared conversation history) and long-term (JSON file persistence across restarts — agent recalls name and preferences without being told again)
 
-**Concepts:** Short-term vs long-term agent memory, JSON-based persistent memory, `save_memory`/`recall_memory` tools, `key|value` input parsing, multi-tool JSON response parsing
+**Concepts:** Short-term vs long-term agent memory, JSON-based persistent memory, `save_memory`/`recall_memory` tools, multi-tool JSON response parsing
 
 ---
 
-### Day 16: Web Search Tool + Group Anagrams (First Medium DSA)
-- `AGENT.py` (with web search) — Agent gains live internet access via DuckDuckGo search tool. Can fetch current AI news, search for documentation, and answer real-time questions. Total: 9 tools
+### Day 16: Web Search Tool — Agent Goes Online
+- `AGENT.py` (with web search) — Agent gains live internet access via DuckDuckGo. Can fetch current AI news, search documentation, answer real-time questions. Total: 9 tools
 
-**Concepts:** DuckDuckGo search integration (`ddgs` package), rate limiting with `time.sleep()`, safe result parsing with `.get()`, real-time data in agent responses
+**Concepts:** DuckDuckGo search (`ddgs`), rate limiting with `time.sleep()`, safe result parsing with `.get()`
 
 ---
 
 ### Day 17: AI Agent Web UI (Streamlit)
-- `agent_app.py` — Full Streamlit web interface wrapping the terminal agent: chat bubbles, "Tools used" expander showing which tools fired, sidebar memory panel updating in real time, clear memory button, all 9 tools accessible from the browser
+- `agent_app.py` — Full Streamlit web interface: chat bubbles, "Tools used" expander, sidebar memory panel updating in real time, clear memory button, all 9 tools from browser
 
-**Concepts:** Converting terminal scripts to Streamlit (print→st.write, input→st.chat_input, globals→session_state, model loading→@st.cache_resource), tool name consistency between TOOLS dict and TOOLS_DESCRIPTION, avoiding double session_state appends
+**Concepts:** Terminal→Streamlit conversion framework (print→st.write, input→st.chat_input, globals→session_state), `@st.cache_resource`, tool name consistency
+
+---
+
+### Day 18: Agent App Deployed + Product of Array Except Self
+- `agent_app.py` deployed to Streamlit Community Cloud — second live AI product
+
+**Live URL:** [AI Agent →](https://ai-engineer-journey-aiagent.streamlit.app/)
+
+**Concepts:** Multi-app deployment, separate `requirements.txt` per app, per-folder `.streamlit/secrets.toml`, prefix/suffix product pattern (DSA)
+
+---
+
+### Day 19: Valid Palindrome — Two Pointers Pattern (DSA)
+- First Two Pointers problem — a brand new pattern after 6 days of hash maps
+- Two pointer approach: left pointer from start, right pointer from end, skip non-alphanumeric, compare case-insensitively until pointers meet
+
+**Concepts:** Two Pointers pattern, `.isalnum()`, `.lower()`, O(n) time O(1) space solution, inner while loops for skipping
 
 ---
 
@@ -149,13 +169,15 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 | 9 | Embeddings + Semantic Search | ✅ |
 | 10 | Mini RAG (terminal) | ✅ |
 | 11 | RAG Web App (Streamlit) | ✅ |
-| 12 | Deployed to Streamlit Cloud | ✅ |
+| 12 | RAG App Deployed | ✅ |
 | 13 | AI Agent with Tool Use | ✅ |
 | 14 | Expanded Agent (6 tools) | ✅ |
 | 15 | Agent Memory (short + long term) | ✅ |
 | 16 | Web Search Tool (9 tools total) | ✅ |
 | 17 | Agent Web UI (Streamlit) | ✅ |
-| 18+ | Product of Array Except Self, more agents | 🔄 In progress |
+| 18 | Agent App Deployed (2nd live app) | ✅ |
+| 19 | Valid Palindrome — Two Pointers | ✅ |
+| 20+ | More Two Pointers, FastAPI | 🔄 In progress |
 
 ## 🧩 DSA Track (NeetCode 150)
 
@@ -166,16 +188,18 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 | 15 | Two Sum | Hash Map | Easy | ✅ |
 | 16 | Group Anagrams | Hash Map + defaultdict | Medium | ✅ |
 | 17 | Top K Frequent Elements | Hash Map + Bucket Sort | Medium | ✅ |
-| 18+ | Product of Array Except Self | Prefix/Suffix | Medium | 🔄 |
+| 18 | Product of Array Except Self | Prefix + Suffix | Medium | ✅ |
+| 19 | Valid Palindrome | Two Pointers | Easy | ✅ |
+| 20+ | Two Sum II | Two Pointers | Medium | 🔄 |
 
 ## 🎯 Roadmap
 
-- [ ] Product of Array Except Self (DSA)
-- [ ] Deploy Agent web app to Streamlit Cloud
+- [ ] Two Pointers problems (Two Sum II, 3Sum, Container with Most Water)
+- [ ] FastAPI — build AI backend
 - [ ] ChromaDB vector database for scaling RAG
 - [ ] PDF support for RAG
 - [ ] Fine-tuning basics
-- [ ] Portfolio polish + more live demos
+- [ ] Portfolio polish
 
 ## 🚀 Setup
 
@@ -192,7 +216,7 @@ Run any script with `python <filename>.py` or Streamlit apps with `streamlit run
 
 **Aditya Panchal**
 B.Tech CSE/AI Student | Building toward AI Engineering
-[GitHub](https://github.com/Adityapanchal09)
+[GitHub](https://github.com/Adityapanchal09/ai-engineer-journey)
 
 ---
 
