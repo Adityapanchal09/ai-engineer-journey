@@ -52,7 +52,7 @@ if user_input:
     with st.chat_message("assistant"):
         with st.spinner("Thinking..."):
             response = client.chat.completions.create(
-                model="llama-3.3-70b-versatile",
+                model="qwen/qwen3.6-27b",
                 messages=[{"role": "system", "content": system_prompt}] + st.session_state.messages
             )
             reply = response.choices[0].message.content

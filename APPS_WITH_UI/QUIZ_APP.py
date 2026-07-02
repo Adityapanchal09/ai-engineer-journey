@@ -24,7 +24,7 @@ if "answered" not in st.session_state:
 #---Functions---
 def generate_quiz(topic,num_questions):
     response=client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model="qwen/qwen3.6-27b",
         messages=[{
             "role":"system","content":f"""Return only a JSON array of {num_questions} MCQ Questions on {topic}.
             Each Object:question,options(4 strings),answer ,explanation.NO Markdown."""

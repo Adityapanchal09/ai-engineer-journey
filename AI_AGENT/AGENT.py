@@ -39,7 +39,7 @@ def get_joke(topic:str)->str:
 
 def summarize_text(text:str)->str:
     response=client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model="qwen/qwen3.6-27b",
         messages=[
             {"role":"system","content":"summarize in 2 sentences"},
             {"role":"user","content":text}
@@ -160,7 +160,7 @@ def run_agent(user_task):
     #Agent loop max 5 iterations to prevent for infinite loops
     for i in range(5):
         response=client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+            model="qwen/qwen3.6-27b",
             messages=messages
         )
 

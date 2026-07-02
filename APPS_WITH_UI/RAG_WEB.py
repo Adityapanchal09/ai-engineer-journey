@@ -60,7 +60,7 @@ def retrieve(query,chunks,embeddings,messages,top_k=3,threshold=0.3):
 def answer(query,relevant_chunks):
     context="\n\n".join(relevant_chunks)
     response=client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model="qwen/qwen3.6-27b",
         messages=[
             {"role":"system","content":f"""Answer only using the CONTEXT below,
              if answer not in context,say"Not found in the document"

@@ -8,7 +8,7 @@ client=Groq()
 
 def Generate_quiz(topic,num_questions=5):
     response=client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model="qwen/qwen3.6-27b",
         messages=[{
             "role":"system","content":f"""You are a quiz generator for CS students.
 Return ONLY a valid JSON array of {num_questions} questions.

@@ -54,7 +54,7 @@ def get_joke(topic:str)->str:
 
 def summarize_text(text:str)->str:
     response=client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model="qwen/qwen3.6-27b",
         messages=[
             {"role":"system","content":"summarize in 2 sentences"},
             {"role":"user","content":text}
@@ -209,7 +209,7 @@ if user_input:
              # Agent loop — same logic as your for i in range(5)
             for i in range(5):
                 response = client.chat.completions.create(
-                    model="llama-3.3-70b-versatile",
+                    model="qwen/qwen3.6-27b",
                     messages=messages
                 )
                 reply = response.choices[0].message.content.strip()

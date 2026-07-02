@@ -11,7 +11,7 @@ fact=fact_response.json()["text"]
 print(f"Fact:{fact}")
 
 response=client.chat.completions.create(
-    model="llama-3.3-70b-versatile",
+    model="qwen/qwen3.6-27b",
     messages=[{
         "role":"system","content":"You are a curious Science Explainer"
 

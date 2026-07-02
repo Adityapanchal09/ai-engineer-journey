@@ -38,7 +38,7 @@ def retrieve_relevant_chunks(query,chunks,chunk_embeddings,top_k=3,threshold=0.3
 def answer_question(query,relevant_chunks):
     context="\n\n".join(relevant_chunks)
     response = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model="qwen/qwen3.6-27b",
         messages=[
             {"role": "system", "content":f"""Answer the Question using only the context below.
              if the answer is not in the context ,say "Not Found in the Document."

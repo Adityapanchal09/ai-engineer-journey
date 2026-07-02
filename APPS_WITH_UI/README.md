@@ -1,6 +1,6 @@
 # 📚 AI Study Assistant
 
-An interactive, web-based AI tutor built with Python, Streamlit, and Groq's LLaMA 3.3 70B model. Choose any subject and chat with a personalized AI tutor that explains concepts using simple analogies.
+An interactive, web-based AI tutor built with Python, Streamlit, and Groq's qwen/qwen3.6-27b 3.3 70B model. Choose any subject and chat with a personalized AI tutor that explains concepts using simple analogies.
 
 ![AI Study Assistant Screenshot](![alt text](image.png))
 
@@ -9,14 +9,14 @@ An interactive, web-based AI tutor built with Python, Streamlit, and Groq's LLaM
 - 💬 **ChatGPT-style chat interface** — clean message bubbles for user and AI
 - 🎯 **Subject-aware tutoring** — set any subject (History, Operating Systems, DAA, etc.) and the AI adapts its persona
 - 🧠 **Persistent conversation memory** — full chat history maintained across the session
-- ⚡ **Fast responses** — powered by Groq's LLaMA 3.3 70B (low latency inference)
+- ⚡ **Fast responses** — powered by Groq's qwen/qwen3.6-27b 3.3 70B (low latency inference)
 - 🔄 **New session reset** — switch subjects and start fresh anytime
 
 ## Tech Stack
 
 - **Python 3.12**
 - **Streamlit** — web UI framework
-- **Groq API** — LLaMA 3.3 70B Versatile model
+- **Groq API** — qwen/qwen3.6-27b 3.3 70B Versatile model
 - **python-dotenv** — environment variable management
 
 ## How It Works

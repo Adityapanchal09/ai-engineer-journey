@@ -1,6 +1,6 @@
 # 🤖 AI Engineer Journey
 
-A daily learning log documenting my path to becoming an AI Engineer — building real, working projects using Python, the Groq API (LLaMA 3.3 70B), REST APIs, Streamlit, embeddings, RAG, and AI Agents.
+A daily learning log documenting my path to becoming an AI Engineer — building real, working projects using Python, the Groq API (qwen/qwen3.6-27b 3.3 70B), REST APIs, Streamlit, embeddings, RAG, and AI Agents.
 
 ## 🌐 Live Demos
 | App | URL |
@@ -11,7 +11,7 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 ## 🛠️ Tech Stack
 
 - **Python 3.12**
-- **Groq API** (LLaMA 3.3 70B Versatile)
+- **Groq API** (qwen/qwen3.6-27b 3.3 70B Versatile)
 - **Streamlit** — web UI + deployment
 - **sentence-transformers** — local embeddings
 - **ddgs** — DuckDuckGo web search

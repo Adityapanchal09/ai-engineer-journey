@@ -6,7 +6,7 @@ load_dotenv()
 client = Groq()
 
 response = client.chat.completions.create(
-    model="llama-3.3-70b-versatile",
+    model="qwen/qwen3.6-27b",
     messages=[
         {
             "role": "system",

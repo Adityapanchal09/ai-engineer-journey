@@ -17,7 +17,7 @@ def load_document(filepath):
 def ask_ai(document,instruction):
 
     response=client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model="qwen/qwen3.6-27b",
         messages=[{
             "role":"system","content":f"You are a study Assistant,work with this document only:{document}\n\n"
 
@@ -41,7 +41,7 @@ def chat_with_doc(document):
         if q.lower()=="back":break
         history.append({"role":"user","content":q})
         response=client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+            model="qwen/qwen3.6-27b",
             messages=[{"role":"system","content":SYSTEM}]+history
         )
 

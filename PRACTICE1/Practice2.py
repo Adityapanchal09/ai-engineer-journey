@@ -18,7 +18,7 @@ while True:
     history.append({"role":"user","content":user_input})
 
     response=client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model="qwen/qwen3.6-27b",
         messages=[{
             "role":"system","content":"hi i am your study ai,ask me anything"
 
