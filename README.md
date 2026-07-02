@@ -98,6 +98,8 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 - `RAG_WEB.py` deployed to Streamlit Community Cloud — publicly accessible, free, no setup needed
 
 **Live URL:** [Chat With Your Notes →](https://ai-engineer-journey-my-mini-rag.streamlit.app/)
+<img width="1853" height="894" alt="image" src="https://github.com/user-attachments/assets/7e360b0c-01d0-4951-b4dd-f69e426a004a" />
+
 
 **Concepts:** Streamlit Cloud deployment, `requirements.txt`, secrets management, GitHub push protection, rotating exposed API keys
 
@@ -142,6 +144,8 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 - `agent_app.py` deployed to Streamlit Community Cloud — second live AI product
 
 **Live URL:** [AI Agent →](https://ai-engineer-journey-aiagent.streamlit.app/)
+<img width="1855" height="882" alt="image" src="https://github.com/user-attachments/assets/0df70034-b36f-4c00-8d23-799207d051c9" />
+
 
 **Concepts:** Multi-app deployment, separate `requirements.txt` per app, per-folder `.streamlit/secrets.toml`, prefix/suffix product pattern (DSA)
 
