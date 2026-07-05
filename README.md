@@ -1,6 +1,6 @@
 # 🤖 AI Engineer Journey
 
-A daily learning log documenting my path to becoming an AI Engineer — building real, working projects using Python, the Groq API (qwen/qwen3.6-27b 3.3 70B), REST APIs, Streamlit, embeddings, RAG, and AI Agents.
+A daily learning log documenting my path to becoming an AI Engineer — building real, working projects using Python, the Groq API (qwen/qwen3-27b), REST APIs, Streamlit, embeddings, RAG, AI Agents, and FastAPI.
 
 ## 🌐 Live Demos
 | App | URL |
@@ -11,12 +11,13 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 ## 🛠️ Tech Stack
 
 - **Python 3.12**
-- **Groq API** (qwen/qwen3.6-27b 3.3 70B Versatile)
+- **Groq API** (qwen/qwen3-27b)
+- **FastAPI** — production AI backend
 - **Streamlit** — web UI + deployment
 - **sentence-transformers** — local embeddings
 - **ddgs** — DuckDuckGo web search
 - **python-dotenv** — environment management
-- **requests** — REST API calls
+- **requests / httpx** — REST API calls
 
 ## 📂 Projects
 
@@ -100,7 +101,6 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 **Live URL:** [Chat With Your Notes →](https://ai-engineer-journey-my-mini-rag.streamlit.app/)
 <img width="1853" height="894" alt="image" src="https://github.com/user-attachments/assets/7e360b0c-01d0-4951-b4dd-f69e426a004a" />
 
-
 **Concepts:** Streamlit Cloud deployment, `requirements.txt`, secrets management, GitHub push protection, rotating exposed API keys
 
 ---
@@ -146,7 +146,6 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 **Live URL:** [AI Agent →](https://ai-engineer-journey-aiagent.streamlit.app/)
 <img width="1855" height="882" alt="image" src="https://github.com/user-attachments/assets/0df70034-b36f-4c00-8d23-799207d051c9" />
 
-
 **Concepts:** Multi-app deployment, separate `requirements.txt` per app, per-folder `.streamlit/secrets.toml`, prefix/suffix product pattern (DSA)
 
 ---
@@ -156,6 +155,34 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 - Two pointer approach: left pointer from start, right pointer from end, skip non-alphanumeric, compare case-insensitively until pointers meet
 
 **Concepts:** Two Pointers pattern, `.isalnum()`, `.lower()`, O(n) time O(1) space solution, inner while loops for skipping
+
+---
+
+### Day 20: Two Sum II + Three Sum — Two Pointers (DSA)
+- **Two Sum II** — sorted array, two pointers from both ends, move based on sum comparison vs target. O(n) time, O(1) space
+- **Three Sum** — sort array, fix one element with outer loop, use two pointers on the remainder to find pairs that sum to zero. Skip duplicates to avoid repeated triplets
+
+**Concepts:** Two pointers on sorted arrays, duplicate skipping, reducing 3Sum to 2Sum, O(n²) time complexity, combining sort + two pointers
+
+---
+
+### Day 21: FastAPI Intro — AI Engineer API
+- `main.py` — First FastAPI app serving AI via HTTP endpoints: `/chat` POST endpoint accepting JSON, Pydantic request validation, Groq integration, auto-generated Swagger docs at `/docs`
+
+**Concepts:** FastAPI basics, `@app.post()` / `@app.get()` decorators, Pydantic `BaseModel` for request validation, type annotations, `uvicorn` server, automatic OpenAPI docs, HTTP status codes, `HTTPException`
+
+---
+
+### Day 22: Async FastAPI + Streaming Responses
+- `main.py` — Production-grade AI API with two endpoint types: async regular chat and real-time streaming
+- `test_client.py` — Async test client using `httpx` to verify both endpoints
+
+**Endpoints:**
+- `POST /chat` — full async response, returns complete JSON when Groq finishes
+- `POST /chat/stream` — streams tokens to client in real-time as Groq generates them
+- `GET /health` — health check endpoint
+
+**Concepts:** `async/await` in FastAPI, `AsyncGroq` client, `StreamingResponse`, async generator functions (`yield`), `stream=True` in Groq API, `httpx.AsyncClient`, `aiter_text()` for reading streams, `asyncio.run()`, `flush=True` for real-time terminal output, difference between blocking vs non-blocking AI calls
 
 ---
 
@@ -181,7 +208,10 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 | 17 | Agent Web UI (Streamlit) | ✅ |
 | 18 | Agent App Deployed (2nd live app) | ✅ |
 | 19 | Valid Palindrome — Two Pointers | ✅ |
-| 20+ | More Two Pointers, FastAPI | 🔄 In progress |
+| 20 | Two Sum II + Three Sum — Two Pointers | ✅ |
+| 21 | FastAPI Intro — AI Engineer API | ✅ |
+| 22 | Async FastAPI + Streaming Responses | ✅ |
+| 23+ | FastAPI Auth, Docker, LangChain | 🔄 In progress |
 
 ## 🧩 DSA Track (NeetCode 150)
 
@@ -194,14 +224,21 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 | 17 | Top K Frequent Elements | Hash Map + Bucket Sort | Medium | ✅ |
 | 18 | Product of Array Except Self | Prefix + Suffix | Medium | ✅ |
 | 19 | Valid Palindrome | Two Pointers | Easy | ✅ |
-| 20+ | Two Sum II | Two Pointers | Medium | 🔄 |
+| 20 | Two Sum II | Two Pointers | Medium | ✅ |
+| 20 | Three Sum | Two Pointers | Medium | ✅ |
+| 22 | Container With Most Water | Two Pointers | Medium | ✅ |
+| 23+ | Trapping Rain Water | Two Pointers | Hard | 🔄 |
 
 ## 🎯 Roadmap
 
-- [ ] Two Pointers problems (Two Sum II, 3Sum, Container with Most Water)
-- [ ] FastAPI — build AI backend
+- [x] Two Pointers problems (Two Sum II, 3Sum, Container with Most Water)
+- [x] FastAPI — build AI backend
+- [x] Async + Streaming FastAPI endpoints
+- [ ] FastAPI Authentication (API keys)
+- [ ] Docker — containerize AI API
 - [ ] ChromaDB vector database for scaling RAG
 - [ ] PDF support for RAG
+- [ ] LangChain / LangGraph intro
 - [ ] Fine-tuning basics
 - [ ] Portfolio polish
 
@@ -215,6 +252,13 @@ echo "GROQ_API_KEY=your-key-here" > .env
 ```
 
 Run any script with `python <filename>.py` or Streamlit apps with `streamlit run <filename>.py`
+
+For the FastAPI apps:
+```bash
+cd day22-async-streaming
+pip install fastapi uvicorn groq python-dotenv httpx
+uvicorn main:app --reload
+```
 
 ## 👤 Author
 
