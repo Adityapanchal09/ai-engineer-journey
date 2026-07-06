@@ -227,7 +227,8 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 | 20 | Two Sum II | Two Pointers | Medium | ✅ |
 | 20 | Three Sum | Two Pointers | Medium | ✅ |
 | 22 | Container With Most Water | Two Pointers | Medium | ✅ |
-| 23+ | Trapping Rain Water | Two Pointers | Hard | 🔄 |
+| 23 | Trapping Rain Water | Two Pointers | Hard | ✅ |
+
 
 ## 🎯 Roadmap
 
