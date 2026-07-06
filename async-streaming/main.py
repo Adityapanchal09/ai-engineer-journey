@@ -5,6 +5,8 @@ from pydantic import BaseModel
 from groq import AsyncGroq
 from dotenv import load_dotenv
 import asyncio
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 
 load_dotenv()
 
@@ -88,9 +90,13 @@ async def chat_stream(request:ChatRequest):
     )                    
 
 #---Utility End Points---
+#Mount Static folder
+app.mount("/static",StaticFiles(directory="static"),name="static")
+
 @app.get("/")
 async def root():
-    return {"message":"AI Engineer API v0.2-Async +Streaming"}
+    return FileResponse("static/index.html")
+     
 
 @app.get("/health")
 async def health():
