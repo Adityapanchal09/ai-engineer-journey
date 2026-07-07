@@ -121,6 +121,7 @@
       placeholder="Type a message... (Enter to send)"
     ></textarea>
     <button id="send-btn">Send</button>
+    <button onclick="resetChat()" style="margin-left: 10px;">New Chat</button>
   </div>
 
   <script>
@@ -186,6 +187,11 @@
         userInput.focus();
       }
     }
+
+    async function resetChat() {
+    await fetch('/reset', { method: 'POST' });
+    document.getElementById('chat-box').innerHTML = '';  // clear UI
+}
 
     // Send on button click
     sendBtn.addEventListener('click', sendMessage);
