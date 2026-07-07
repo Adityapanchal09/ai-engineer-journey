@@ -186,6 +186,34 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 
 ---
 
+### Day 23: FastAPI + Frontend Streaming Chat UI
+- Built ChatGPT-style streaming chat UI served directly from FastAPI
+- FastAPI `StaticFiles` serves the HTML/CSS/JS frontend
+- Tokens stream in real-time via `fetch` + `ReadableStream` + `TextDecoder` loop on the frontend
+
+**Concepts:** `StaticFiles` mounting in FastAPI, `FileResponse` for serving HTML, browser `ReadableStream`, `TextDecoder`, streaming fetch pattern, frontend-backend integration without a separate framework
+
+---
+
+### Day 24: Multi-turn Conversation Memory
+- `main.py` (upgraded) — Chat app now remembers the full conversation across turns
+- Backend maintains a `conversation_history` list that grows with every user + assistant turn
+- Full history sent to Groq on every request so responses are context-aware
+- New endpoints for managing conversation state
+
+**Endpoints added:**
+- `POST /reset` — clears conversation history (New Chat)
+- `GET /history` — returns full conversation history as JSON for debugging
+
+**DSA — Sliding Window begins:**
+- **Best Time to Buy and Sell Stock** (Easy) — first Sliding Window problem
+- Two pointer approach: `left` = buy day, `right` = sell day, move `left` when a cheaper price is found, track `max_profit` throughout
+- Key insight: global `min`/`max` don't respect order — buy must happen before sell
+
+**Concepts:** Global state in FastAPI, `finally` block to save streamed response after completion, accumulating streamed tokens server-side, variable-size sliding window pattern, O(n) single-pass stock profit
+
+---
+
 ## 📈 Progress Tracker
 
 | Day | Project | Status |
@@ -211,7 +239,8 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 | 20 | Two Sum II + Three Sum — Two Pointers | ✅ |
 | 21 | FastAPI Intro — AI Engineer API | ✅ |
 | 22 | Async FastAPI + Streaming Responses | ✅ |
-| 23+ | FastAPI Auth, Docker, LangChain | 🔄 In progress |
+| 23 | FastAPI + Frontend Streaming Chat UI | ✅ |
+| 24 | Multi-turn Memory + Sliding Window begins | ✅ |
 
 ## 🧩 DSA Track (NeetCode 150)
 
@@ -228,13 +257,17 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 | 20 | Three Sum | Two Pointers | Medium | ✅ |
 | 22 | Container With Most Water | Two Pointers | Medium | ✅ |
 | 23 | Trapping Rain Water | Two Pointers | Hard | ✅ |
-
+| 24 | Best Time to Buy and Sell Stock | Sliding Window | Easy | ✅ |
 
 ## 🎯 Roadmap
 
-- [x] Two Pointers problems (Two Sum II, 3Sum, Container with Most Water)
+- [x] Two Pointers problems (Two Sum II, 3Sum, Container with Most Water, Trapping Rain Water)
 - [x] FastAPI — build AI backend
 - [x] Async + Streaming FastAPI endpoints
+- [x] Frontend streaming chat UI
+- [x] Multi-turn conversation memory
+- [x] Sliding Window — started
+- [ ] Sliding Window — remaining 5 problems
 - [ ] FastAPI Authentication (API keys)
 - [ ] Docker — containerize AI API
 - [ ] ChromaDB vector database for scaling RAG
