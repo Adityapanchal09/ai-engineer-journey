@@ -15,6 +15,14 @@ client=AsyncGroq(api_key=os.getenv("GROQ_API_KEY")) #note:AsyncGroq
 
 MODEL="qwen/qwen3.6-27b" 
 
+PERSONALITIES = {
+    "helpful_assistant": "You are a helpful, friendly AI assistant.",
+    "python_tutor": "You are an expert Python tutor. Explain concepts clearly with code examples. Always point out common mistakes beginners make.",
+    "code_reviewer": "You are a senior software engineer doing code review. Be direct, point out bugs, suggest improvements, and explain why.",
+    "eli5": "You are a teacher who explains everything like the user is 5 years old. Use simple words, analogies, and fun examples.",
+    "socratic": "You are a Socratic tutor. Never give direct answers — instead ask guiding questions to help the user think through problems themselves."
+}
+
 #in memory conversation history
 conversation_history=[]
 
@@ -129,5 +137,9 @@ async def reset_chat():
 @app.get("/history")
 async def get_history():
     return {"history":conversation_history,"turns":len(conversation_history)}
+
+@app.get("/personalities")
+async def get_personalities():
+    return {"personalities":list(PERSONALITIES.keys)}
 
 
