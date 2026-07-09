@@ -199,7 +199,6 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 - `main.py` (upgraded) — Chat app now remembers the full conversation across turns
 - Backend maintains a `conversation_history` list that grows with every user + assistant turn
 - Full history sent to Groq on every request so responses are context-aware
-- New endpoints for managing conversation state
 
 **Endpoints added:**
 - `POST /reset` — clears conversation history (New Chat)
@@ -207,10 +206,32 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 
 **DSA — Sliding Window begins:**
 - **Best Time to Buy and Sell Stock** (Easy) — first Sliding Window problem
-- Two pointer approach: `left` = buy day, `right` = sell day, move `left` when a cheaper price is found, track `max_profit` throughout
+- Two pointer approach: `left` = buy day, `right` = sell day, move `left` when cheaper price found, track `max_profit` throughout
 - Key insight: global `min`/`max` don't respect order — buy must happen before sell
 
 **Concepts:** Global state in FastAPI, `finally` block to save streamed response after completion, accumulating streamed tokens server-side, variable-size sliding window pattern, O(n) single-pass stock profit
+
+---
+
+### Day 25: AI Personality Switcher + Longest Substring Without Repeating Characters
+- `index.html` (upgraded) — Added personality dropdown to the chat UI with 5 selectable AI modes
+- `main.py` (upgraded) — Added `PERSONALITIES` dict and `GET /personalities` endpoint
+- Switching personality auto-resets conversation history so context doesn't bleed across modes
+
+**Personalities added:**
+- 🤖 Helpful Assistant — general purpose
+- 🐍 Python Tutor — explains with code examples, highlights beginner mistakes
+- 🔍 Code Reviewer — direct, finds bugs, suggests improvements
+- 👶 ELI5 — simple words, analogies, fun examples
+- 🏛️ Socratic Tutor — never gives answers, asks guiding questions instead
+
+**DSA — Sliding Window #2:**
+- **Longest Substring Without Repeating Characters** (Medium) — LeetCode 3
+- Variable-size sliding window: `right` moves forward in `for` loop, `left` moves forward in inner `while` loop when duplicate found
+- `seen` set tracks characters in current window, remove `s[left]` when shrinking
+- Key insight: move `left` in a `while` loop, not just once — one step may not be enough to remove the duplicate
+
+**Concepts:** `PERSONALITIES` dict as config, frontend dropdown → system prompt mapping in JS, auto-reset on personality switch, variable-size sliding window with `while` inner loop, O(n) time O(k) space where k = character set size
 
 ---
 
@@ -241,6 +262,7 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 | 22 | Async FastAPI + Streaming Responses | ✅ |
 | 23 | FastAPI + Frontend Streaming Chat UI | ✅ |
 | 24 | Multi-turn Memory + Sliding Window begins | ✅ |
+| 25 | Personality Switcher + Longest Substring | ✅ |
 
 ## 🧩 DSA Track (NeetCode 150)
 
@@ -258,6 +280,7 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 | 22 | Container With Most Water | Two Pointers | Medium | ✅ |
 | 23 | Trapping Rain Water | Two Pointers | Hard | ✅ |
 | 24 | Best Time to Buy and Sell Stock | Sliding Window | Easy | ✅ |
+| 25 | Longest Substring Without Repeating Characters | Sliding Window | Medium | ✅ |
 
 ## 🎯 Roadmap
 
@@ -266,8 +289,9 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 - [x] Async + Streaming FastAPI endpoints
 - [x] Frontend streaming chat UI
 - [x] Multi-turn conversation memory
-- [x] Sliding Window — started
-- [ ] Sliding Window — remaining 5 problems
+- [x] AI Personality Switcher
+- [x] Sliding Window — 2/6 done
+- [ ] Sliding Window — remaining 4 problems
 - [ ] FastAPI Authentication (API keys)
 - [ ] Docker — containerize AI API
 - [ ] ChromaDB vector database for scaling RAG
