@@ -115,11 +115,37 @@
   <div id="chat-box"></div>
 
   <div id="input-area">
+    <div id="personality-label" style="
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 6px;
+">
+    Mode: 🤖 Helpful Assistant
+</div>
     <textarea
       id="user-input"
       rows="1"
       placeholder="Type a message... (Enter to send)"
     ></textarea>
+    <div style="margin-bottom: 10px;">
+    <label style="color: #ccc; font-size: 14px;">AI Personality:</label>
+    <select id="personality-select" style="
+        margin-left: 8px;
+        background: #2a2a2a;
+        color: #fff;
+        border: 1px solid #444;
+        border-radius: 6px;
+        padding: 4px 8px;
+        font-size: 14px;
+        cursor: pointer;
+    ">
+        <option value="helpful_assistant">🤖 Helpful Assistant</option>
+        <option value="python_tutor">🐍 Python Tutor</option>
+        <option value="code_reviewer">🔍 Code Reviewer</option>
+        <option value="eli5">👶 Explain Like I'm 5</option>
+        <option value="socratic">🏛️ Socratic Tutor</option>
+    </select>
+</div>
     <button id="send-btn">Send</button>
     <button onclick="resetChat()" style="margin-left: 10px;">New Chat</button>
   </div>
@@ -141,6 +167,16 @@
 
     // Main send function
     async function sendMessage() {
+      const personalityPrompts = {
+    "helpful_assistant": "You are a helpful, friendly AI assistant.",
+    "python_tutor": "You are an expert Python tutor. Explain concepts clearly with code examples. Always point out common mistakes beginners make.",
+    "code_reviewer": "You are a senior software engineer doing code review. Be direct, point out bugs, suggest improvements, and explain why.",
+    "eli5": "You are a teacher who explains everything like the user is 5 years old. Use simple words, analogies, and fun examples.",
+    "socratic": "You are a Socratic tutor. Never give direct answers — instead ask guiding questions to help the user think through problems themselves."
+};
+
+      const selectedKey = document.getElementById('personality-select').value;
+      const systemPrompt = personalityPrompts[selectedKey];
       const message = userInput.value.trim();
       if (!message) return;
 
@@ -160,7 +196,7 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             message: message,
-            system_prompt: 'You are a helpful AI assistant.',
+            system_prompt: systemPrompt,
             max_tokens: 1024
           })
         });
@@ -203,6 +239,21 @@
         sendMessage();
       }
     });
+
+    document.getElementById('personality-select').addEventListener('change', function() {
+    const labels = {
+        "helpful_assistant": "🤖 Helpful Assistant",
+        "python_tutor": "🐍 Python Tutor",
+        "code_reviewer": "🔍 Code Reviewer",
+        "eli5": "👶 Explain Like I'm 5",
+        "socratic": "🏛️ Socratic Tutor"
+    };
+    document.getElementById('personality-label').innerText = "Mode: " + labels[this.value];
+    
+    // also reset conversation when switching personality
+    fetch('/reset', { method: 'POST' });
+    document.getElementById('chat-box').innerHTML = '';
+});
   </script>
 
 </body>
