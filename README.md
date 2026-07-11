@@ -235,6 +235,34 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 
 ---
 
+### Day 26: Skills Audit + Sliding Window Problems
+- Conducted a full audit of Days 1–25 to identify gaps and plan next phases
+- **DSA — Sliding Window #3 & #4:**
+  - **Longest Repeating Character Replacement** (Medium) — LeetCode 424
+  - **Permutation in String** (Medium) — LeetCode 567
+
+**Gaps identified:** evals/testing, Docker deployment, advanced RAG, structured outputs (Pydantic), agent frameworks (LangGraph, CrewAI), LLM observability
+
+**Concepts:** Sliding window with character frequency maps, `max()` on dict values, fixed-size window validation, anagram detection via window comparison, O(26n) ≈ O(n) frequency comparison
+
+---
+
+### Day 27: Job Post Analyzer — Structured Outputs with Pydantic + FastAPI
+- `models.py` — Pydantic schema defining the full structured output: job title, company, experience level, skills, responsibilities, red flags, and summary
+- `analyzer.py` — Groq integration with robust `clean_response()` to strip Qwen3 `<think>` blocks and extract pure JSON
+- `main.py` — FastAPI backend serving both the `/analyze` POST endpoint and the frontend via `StaticFiles`
+- `static/index.html` — Dark-themed single-page frontend: paste a job description, get fully parsed structured output rendered with skill tags, badges, and red flag highlights
+
+**Key features:**
+- `Optional` fields handle real-world messy job posts gracefully (missing salary, unnamed companies)
+- `red_flags` field detects issues like unpaid trials, unrealistic experience demands, and vague compensation
+- `clean_response()` handles Qwen3's `<think>` blocks with `re.DOTALL` regex + JSON boundary extraction (`find('{')` / `rfind('}')`)
+- Full UI rendered from FastAPI itself — no separate frontend server needed
+
+**Concepts:** Pydantic `BaseModel` for structured LLM output, `Optional[str] = None` vs required fields, `list[str]` typed fields, `json.loads()` → Pydantic validation pipeline, `re.sub()` with `re.DOTALL` for multi-line regex, JSON boundary extraction, `StaticFiles` + `FileResponse` in FastAPI, OpenAI-compatible Groq API vs Anthropic-style API differences
+
+---
+
 ## 📈 Progress Tracker
 
 | Day | Project | Status |
@@ -263,6 +291,8 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 | 23 | FastAPI + Frontend Streaming Chat UI | ✅ |
 | 24 | Multi-turn Memory + Sliding Window begins | ✅ |
 | 25 | Personality Switcher + Longest Substring | ✅ |
+| 26 | Skills Audit + Sliding Window #3 & #4 | ✅ |
+| 27 | Job Post Analyzer — Structured Outputs + Pydantic + FastAPI | ✅ |
 
 ## 🧩 DSA Track (NeetCode 150)
 
@@ -281,6 +311,8 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 | 23 | Trapping Rain Water | Two Pointers | Hard | ✅ |
 | 24 | Best Time to Buy and Sell Stock | Sliding Window | Easy | ✅ |
 | 25 | Longest Substring Without Repeating Characters | Sliding Window | Medium | ✅ |
+| 26 | Longest Repeating Character Replacement | Sliding Window | Medium | ✅ |
+| 26 | Permutation in String | Sliding Window | Medium | ✅ |
 
 ## 🎯 Roadmap
 
@@ -290,8 +322,9 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 - [x] Frontend streaming chat UI
 - [x] Multi-turn conversation memory
 - [x] AI Personality Switcher
-- [x] Sliding Window — 2/6 done
-- [ ] Sliding Window — remaining 4 problems
+- [x] Sliding Window — 4/6 done
+- [x] Structured Outputs with Pydantic
+- [ ] Sliding Window — remaining 2 problems
 - [ ] FastAPI Authentication (API keys)
 - [ ] Docker — containerize AI API
 - [ ] ChromaDB vector database for scaling RAG
@@ -313,8 +346,8 @@ Run any script with `python <filename>.py` or Streamlit apps with `streamlit run
 
 For the FastAPI apps:
 ```bash
-cd day22-async-streaming
-pip install fastapi uvicorn groq python-dotenv httpx
+cd day27-job-analyzer
+pip install fastapi uvicorn groq pydantic python-dotenv aiofiles
 uvicorn main:app --reload
 ```
 

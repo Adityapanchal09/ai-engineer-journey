@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Job Post Analyzer</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #0f1117;
+      color: #e0e0e0;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 8px;
+      color: #ffffff;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #888;
+      margin-bottom: 40px;
+      font-size: 0.95rem;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    textarea {
+      width: 100%;
+      height: 220px;
+      background: #1a1d27;
+      border: 1px solid #2e3150;
+      border-radius: 10px;
+      color: #e0e0e0;
+      padding: 16px;
+      font-size: 0.95rem;
+      resize: vertical;
+      outline: none;
+      transition: border 0.2s;
+    }
+
+    textarea:focus { border-color: #6c63ff; }
+
+    button {
+      margin-top: 16px;
+      width: 100%;
+      padding: 14px;
+      background: #6c63ff;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    button:hover { background: #574fd6; }
+    button:disabled { background: #3a3a5c; cursor: not-allowed; }
+
+    #error {
+      display: none;
+      margin-top: 16px;
+      padding: 12px 16px;
+      background: #2a1a1a;
+      border: 1px solid #ff4c4c;
+      border-radius: 8px;
+      color: #ff6b6b;
+      font-size: 0.9rem;
+    }
+
+    #results {
+      display: none;
+      margin-top: 40px;
+    }
+
+    .card {
+      background: #1a1d27;
+      border: 1px solid #2e3150;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    .card h2 {
+      font-size: 1.4rem;
+      color: #ffffff;
+      margin-bottom: 4px;
+    }
+
+    .card .company {
+      color: #888;
+      font-size: 0.9rem;
+      margin-bottom: 16px;
+    }
+
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .badge {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .badge-purple { background: #2d2660; color: #a99cf4; }
+    .badge-blue   { background: #162040; color: #60a5fa; }
+    .badge-green  { background: #0f2d1f; color: #4ade80; }
+    .badge-gray   { background: #1e2030; color: #94a3b8; }
+
+    .summary {
+      color: #b0b8cc;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-top: 12px;
+    }
+
+    .section-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #6c63ff;
+      margin-bottom: 12px;
+    }
+
+    .skill-tag {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      margin: 4px;
+    }
+
+    .skill-required  { background: #1e2a40; color: #93c5fd; border: 1px solid #2a3f60; }
+    .skill-preferred { background: #1e2830; color: #6ee7b7; border: 1px solid #2a4040; }
+
+    .red-flag-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 14px;
+      background: #2a1a1a;
+      border: 1px solid #4a1a1a;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      color: #fca5a5;
+      font-size: 0.9rem;
+    }
+
+    .red-flag-item span.icon { font-size: 1rem; margin-top: 1px; }
+
+    .clean-bill {
+      color: #4ade80;
+      font-size: 0.9rem;
+      padding: 10px 14px;
+      background: #0f2d1f;
+      border: 1px solid #1a4a2a;
+      border-radius: 8px;
+    }
+
+    .resp-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .resp-list li {
+      padding: 8px 0;
+      border-bottom: 1px solid #2e3150;
+      color: #c0c8dc;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .resp-list li:last-child { border-bottom: none; }
+    .resp-list li::before { content: "→ "; color: #6c63ff; }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-top: 12px;
+    }
+
+    .meta-item {
+      font-size: 0.85rem;
+      color: #94a3b8;
+    }
+
+    .meta-item span {
+      color: #e0e0e0;
+      font-weight: 600;
+    }
+
+    .loader {
+      display: none;
+      text-align: center;
+      padding: 20px;
+      color: #6c63ff;
+      font-size: 0.95rem;
+    }
+
+    .loader::after {
+      content: '';
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border: 2px solid #6c63ff;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-left: 10px;
+      vertical-align: middle;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔍 Job Post Analyzer</h1>
+    <p class="subtitle">Paste any job description — get structured insights instantly</p>
+
+    <textarea id="jd-input" placeholder="Paste job description here..."></textarea>
+    <button id="analyze-btn" onclick="analyzeJob()">Analyze Job Post</button>
+
+    <div id="error"></div>
+    <div class="loader" id="loader">Analyzing with AI</div>
+
+    <div id="results">
+      <!-- Overview Card -->
+      <div class="card">
+        <h2 id="r-title"></h2>
+        <div class="company" id="r-company"></div>
+        <div class="badges" id="r-badges"></div>
+        <div class="meta-row" id="r-meta"></div>
+        <p class="summary" id="r-summary"></p>
+      </div>
+
+      <!-- Skills Card -->
+      <div class="card">
+        <div class="section-title">Required Skills</div>
+        <div id="r-required"></div>
+        <div class="section-title" style="margin-top:16px">Preferred Skills</div>
+        <div id="r-preferred"></div>
+      </div>
+
+      <!-- Responsibilities Card -->
+      <div class="card">
+        <div class="section-title">Responsibilities</div>
+        <ul class="resp-list" id="r-resp"></ul>
+      </div>
+
+      <!-- Red Flags Card -->
+      <div class="card">
+        <div class="section-title">⚠️ Red Flags</div>
+        <div id="r-flags"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    async function analyzeJob() {
+      const jd = document.getElementById('jd-input').value.trim();
+      const btn = document.getElementById('analyze-btn');
+      const loader = document.getElementById('loader');
+      const errorDiv = document.getElementById('error');
+      const results = document.getElementById('results');
+
+      if (!jd) return;
+
+      // Reset UI
+      btn.disabled = true;
+      loader.style.display = 'block';
+      errorDiv.style.display = 'none';
+      results.style.display = 'none';
+
+      try {
+        const res = await fetch('/analyze', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ job_description: jd })
+        });
+
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err.detail || 'Something went wrong');
+        }
+
+        const data = await res.json();
+        renderResults(data);
+
+      } catch (err) {
+        errorDiv.textContent = '❌ ' + err.message;
+        errorDiv.style.display = 'block';
+      } finally {
+        btn.disabled = false;
+        loader.style.display = 'none';
+      }
+    }
+
+    function renderResults(d) {
+      // Title & company
+      document.getElementById('r-title').textContent = d.job_title;
+      document.getElementById('r-company').textContent = d.company_name || 'Company not specified';
+
+      // Badges
+      const badgeMap = {
+        [d.experience_level]: 'badge-purple',
+        [d.employment_type]:  'badge-blue',
+        [d.work_mode]:        'badge-green',
+      };
+      document.getElementById('r-badges').innerHTML = Object.entries(badgeMap)
+        .filter(([k]) => k)
+        .map(([k, cls]) => `<span class="badge ${cls}">${k}</span>`)
+        .join('');
+
+      // Meta info
+      const meta = [];
+      if (d.experience_years) meta.push(`Experience: <span>${d.experience_years}</span>`);
+      if (d.salary_range)     meta.push(`Salary: <span>${d.salary_range}</span>`);
+      if (d.location)         meta.push(`Location: <span>${d.location}</span>`);
+      document.getElementById('r-meta').innerHTML = meta
+        .map(m => `<div class="meta-item">${m}</div>`).join('');
+
+      // Summary
+      document.getElementById('r-summary').textContent = d.summary;
+
+      // Skills
+      document.getElementById('r-required').innerHTML = d.required_skills
+        .map(s => `<span class="skill-tag skill-required">${s}</span>`).join('');
+      document.getElementById('r-preferred').innerHTML = d.preferred_skills.length
+        ? d.preferred_skills.map(s => `<span class="skill-tag skill-preferred">${s}</span>`).join('')
+        : '<span style="color:#555;font-size:0.85rem">None specified</span>';
+
+      // Responsibilities
+      document.getElementById('r-resp').innerHTML = d.responsibilities
+        .map(r => `<li>${r}</li>`).join('');
+
+      // Red flags
+      const flagsDiv = document.getElementById('r-flags');
+      if (d.red_flags.length === 0) {
+        flagsDiv.innerHTML = '<div class="clean-bill">✅ No red flags detected</div>';
+      } else {
+        flagsDiv.innerHTML = d.red_flags
+          .map(f => `<div class="red-flag-item"><span class="icon">🚩</span>${f}</div>`)
+          .join('');
+      }
+
+      document.getElementById('results').style.display = 'block';
+      document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>
