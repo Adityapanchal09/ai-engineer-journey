@@ -13,6 +13,7 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 - **Python 3.12**
 - **Groq API** (qwen/qwen3-27b)
 - **FastAPI** — production AI backend
+- **LangChain** — LLM application framework
 - **Streamlit** — web UI + deployment
 - **sentence-transformers** — local embeddings
 - **ddgs** — DuckDuckGo web search
@@ -259,7 +260,37 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 - `clean_response()` handles Qwen3's `<think>` blocks with `re.DOTALL` regex + JSON boundary extraction (`find('{')` / `rfind('}')`)
 - Full UI rendered from FastAPI itself — no separate frontend server needed
 
-**Concepts:** Pydantic `BaseModel` for structured LLM output, `Optional[str] = None` vs required fields, `list[str]` typed fields, `json.loads()` → Pydantic validation pipeline, `re.sub()` with `re.DOTALL` for multi-line regex, JSON boundary extraction, `StaticFiles` + `FileResponse` in FastAPI, OpenAI-compatible Groq API vs Anthropic-style API differences
+**DSA — Arrays & Hashing #7:**
+- **Longest Consecutive Sequence** (Medium) — LeetCode 128
+- Convert array to a `set` for O(1) lookups, only start counting from sequence starts (`num - 1` not in set)
+- Each number visited at most twice — once in outer loop, once inside while — making it truly O(n)
+- Key insight: a number is a sequence start only if its predecessor doesn't exist in the set
+
+**Concepts:** Pydantic `BaseModel` for structured LLM output, `Optional[str] = None` vs required fields, `list[str]` typed fields, `json.loads()` → Pydantic validation pipeline, `re.sub()` with `re.DOTALL` for multi-line regex, JSON boundary extraction, `StaticFiles` + `FileResponse` in FastAPI, hash set sequence detection, O(n) amortized traversal
+
+---
+
+### Day 28: LangChain Fundamentals + Encode and Decode Strings
+- `day28_langchain_basics.py` — Progressive LangChain exploration: basic LLM call → prompt templates → pipe chain → output parser → conversation memory
+
+**LangChain components covered:**
+- `ChatGroq` — wraps Groq API as a LangChain-compatible LLM object
+- `ChatPromptTemplate` — reusable prompt with `{variable}` slots filled at runtime
+- `prompt | llm | parser` — the canonical LangChain pipe chain pattern
+- `StrOutputParser` — extracts plain string from `AIMessage` object automatically
+- `MessagesPlaceholder` — slot in prompt template that accepts full chat history list
+- `HumanMessage` / `AIMessage` — typed message objects replacing raw `{"role": "user", ...}` dicts
+- Manual `chat_history` list — grows each turn, passed into chain via `invoke({...})`
+
+**Key insight:** LangChain replaces what you built manually — `client.chat.completions.create()` becomes `ChatGroq`, message history dicts become typed objects, and multi-step pipelines become `prompt | llm | parser`
+
+**DSA — Arrays & Hashing #8:**
+- **Encode and Decode Strings** (Medium) — LeetCode 271
+- Length-prefix encoding: store `len(word)#word` for each string, making delimiter unambiguous regardless of string contents
+- Decode uses index `i` + `str.index('#', i)` to find length, then slices exactly that many chars after `#`
+- Key insight: can't use simple delimiters like `","` since they may appear inside strings — length prefix is always unambiguous
+
+**Concepts:** `ChatGroq`, `ChatPromptTemplate.from_messages()`, `MessagesPlaceholder`, pipe operator `|` for chaining, `StrOutputParser`, `HumanMessage`/`AIMessage` typed messages, length-prefix string encoding, `str.index(char, start)` for positional search, index-based while loop decoding, O(n) encode and decode
 
 ---
 
@@ -293,6 +324,7 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 | 25 | Personality Switcher + Longest Substring | ✅ |
 | 26 | Skills Audit + Sliding Window #3 & #4 | ✅ |
 | 27 | Job Post Analyzer — Structured Outputs + Pydantic + FastAPI | ✅ |
+| 28 | LangChain Fundamentals + Encode and Decode Strings | ✅ |
 
 ## 🧩 DSA Track (NeetCode 150)
 
@@ -313,6 +345,8 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 | 25 | Longest Substring Without Repeating Characters | Sliding Window | Medium | ✅ |
 | 26 | Longest Repeating Character Replacement | Sliding Window | Medium | ✅ |
 | 26 | Permutation in String | Sliding Window | Medium | ✅ |
+| 27 | Longest Consecutive Sequence | Arrays & Hashing | Medium | ✅ |
+| 28 | Encode and Decode Strings | Arrays & Hashing | Medium | ✅ |
 
 ## 🎯 Roadmap
 
@@ -324,12 +358,15 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 - [x] AI Personality Switcher
 - [x] Sliding Window — 4/6 done
 - [x] Structured Outputs with Pydantic
+- [x] LangChain fundamentals — prompt templates, chains, memory
+- [ ] Arrays & Hashing — 1 problem remaining (Valid Sudoku)
 - [ ] Sliding Window — remaining 2 problems
+- [ ] LangChain RAG pipeline
+- [ ] LangGraph intro
 - [ ] FastAPI Authentication (API keys)
 - [ ] Docker — containerize AI API
 - [ ] ChromaDB vector database for scaling RAG
 - [ ] PDF support for RAG
-- [ ] LangChain / LangGraph intro
 - [ ] Fine-tuning basics
 - [ ] Portfolio polish
 
@@ -349,6 +386,13 @@ For the FastAPI apps:
 cd day27-job-analyzer
 pip install fastapi uvicorn groq pydantic python-dotenv aiofiles
 uvicorn main:app --reload
+```
+
+For LangChain:
+```bash
+cd day28-langchain
+pip install langchain langchain-groq python-dotenv
+python day28_langchain_basics.py
 ```
 
 ## 👤 Author
