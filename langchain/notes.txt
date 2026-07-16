@@ -1,0 +1,16 @@
+LangChain is a framework for building LLM-powered applications.
+It provides tools like prompt templates, chains, memory, and retrievers.
+
+FastAPI is a modern Python web framework for building APIs.
+It supports async, automatic docs, and Pydantic validation.
+
+RAG stands for Retrieval Augmented Generation.
+It grounds LLM responses in your own documents to reduce hallucination.
+Vector databases store embeddings for fast similarity search.
+FAISS is a local vector store made by Facebook AI Research.
+
+Python is a high level programming language widely used in AI and data science.
+It is known for its simple syntax and large ecosystem of libraries.
+
+Pydantic is a data validation library for Python.
+It uses type annotations to validate and parse data automatically.
