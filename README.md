@@ -16,6 +16,7 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 - **LangChain** — LLM application framework
 - **Streamlit** — web UI + deployment
 - **sentence-transformers** — local embeddings
+- **FAISS** — local vector store
 - **ddgs** — DuckDuckGo web search
 - **python-dotenv** — environment management
 - **requests / httpx** — REST API calls
@@ -294,6 +295,54 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 
 ---
 
+### Day 29: LangChain RAG Pipeline + Valid Sudoku
+- `langchain_rag.py` — Full LangChain RAG pipeline: load → split → embed → FAISS vector store → retriever → RAG chain with hallucination prevention
+
+**LangChain RAG components:**
+- `TextLoader` — loads `.txt` file into a LangChain `Document` object with `.page_content` and `.metadata`
+- `RecursiveCharacterTextSplitter` — splits by `\n\n` → `\n` → spaces → characters, always trying largest split first. `chunk_overlap=50` prevents context loss at boundaries
+- `HuggingFaceEmbeddings` — wraps `all-MiniLM-L6-v2` model for chunk embedding
+- `FAISS.from_documents()` — embeds all chunks and builds vector index in one line
+- `as_retriever(search_kwargs={"k": 2})` — converts FAISS into LangChain retriever returning top-k chunks
+- `RunnablePassthrough()` — passes question through unchanged into the prompt
+- `retriever | format_docs` — retrieves chunks then joins into one context string
+- Hallucination prevention prompt — "answer ONLY from context, say I don't know if not found"
+
+**Key milestone:** Third question "What is the capital of France?" correctly returned "I don't know based on the provided notes" — proving the RAG grounding works even when the model knows the answer from training
+
+**DSA — Arrays & Hashing #9 (COMPLETE ✅):**
+- **Valid Sudoku** (Medium) — LeetCode 36
+- Three `defaultdict(set)` structures — one each for rows, cols, and 3x3 boxes
+- Box identification: `box_id = (row // 3, col // 3)` gives a tuple key for each of the 9 boxes
+- Check before add: validate digit isn't already in row/col/box set before adding it
+- Key insight: `defaultdict(set)` auto-creates empty set on first access, eliminating manual key existence checks
+
+**Concepts:** `TextLoader`, `RecursiveCharacterTextSplitter`, `HuggingFaceEmbeddings`, `FAISS.from_documents()`, `as_retriever()`, `RunnablePassthrough`, RAG chain composition, hallucination prevention via prompt constraints, `defaultdict(set)` for multi-dimensional duplicate tracking, integer division for box ID, O(1) fixed-size Sudoku complexity
+
+---
+
+### Day 30: Study Notes Chatbot (Independent Build) + Valid Parentheses
+- `study_notes.py` — Independent rebuild of LangChain RAG pipeline applied to real college study notes, with interactive Q&A loop and clean output (think block stripped)
+
+**What makes it different from Day 29:**
+- Built independently without referencing Day 29 code — pure muscle memory
+- Uses real college notes as the knowledge base
+- Interactive `while` loop for continuous Q&A instead of hardcoded questions
+- Study assistant persona in system prompt: "answer only from notes, say 'This topic isn't covered' if not found"
+- `clean_response()` strips Qwen3 `<think>` blocks from terminal output
+- Debugged 3 real errors independently: `len` vs `len(documents)`, missing `model_name=` keyword, dict vs pipe chain
+
+**DSA — Stack section begins:**
+- **Valid Parentheses** (Easy) — LeetCode 20
+- Stack-based matching: push opening brackets, pop and verify on closing brackets
+- `matches = {')': '(', ']': '[', '}': '{'}` maps each closer to its expected opener
+- `if stack and stack[-1] == matches[char]` — guards against empty stack IndexError before checking top
+- Key insight: brackets must close in reverse order of opening — exactly what LIFO stack provides
+
+**Concepts:** Independent project replication as learning strategy, `clean_response()` with `re.DOTALL` for think block removal, interactive terminal chatbot loop, Stack data structure, LIFO (Last In First Out), closing→opening bracket mapping, short-circuit `and` evaluation for safe stack access, O(n) time O(n) space
+
+---
+
 ## 📈 Progress Tracker
 
 | Day | Project | Status |
@@ -325,6 +374,8 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 | 26 | Skills Audit + Sliding Window #3 & #4 | ✅ |
 | 27 | Job Post Analyzer — Structured Outputs + Pydantic + FastAPI | ✅ |
 | 28 | LangChain Fundamentals + Encode and Decode Strings | ✅ |
+| 29 | LangChain RAG Pipeline + Valid Sudoku | ✅ |
+| 30 | Study Notes Chatbot (Independent) + Valid Parentheses | ✅ |
 
 ## 🧩 DSA Track (NeetCode 150)
 
@@ -347,6 +398,8 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 | 26 | Permutation in String | Sliding Window | Medium | ✅ |
 | 27 | Longest Consecutive Sequence | Arrays & Hashing | Medium | ✅ |
 | 28 | Encode and Decode Strings | Arrays & Hashing | Medium | ✅ |
+| 29 | Valid Sudoku | Arrays & Hashing | Medium | ✅ |
+| 30 | Valid Parentheses | Stack | Easy | ✅ |
 
 ## 🎯 Roadmap
 
@@ -359,9 +412,11 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 - [x] Sliding Window — 4/6 done
 - [x] Structured Outputs with Pydantic
 - [x] LangChain fundamentals — prompt templates, chains, memory
-- [ ] Arrays & Hashing — 1 problem remaining (Valid Sudoku)
+- [x] LangChain RAG pipeline
+- [x] Arrays & Hashing — complete ✅
+- [x] Stack section — started
 - [ ] Sliding Window — remaining 2 problems
-- [ ] LangChain RAG pipeline
+- [ ] Stack — remaining problems (Min Stack, Daily Temperatures, etc.)
 - [ ] LangGraph intro
 - [ ] FastAPI Authentication (API keys)
 - [ ] Docker — containerize AI API
@@ -388,11 +443,11 @@ pip install fastapi uvicorn groq pydantic python-dotenv aiofiles
 uvicorn main:app --reload
 ```
 
-For LangChain:
+For LangChain / RAG:
 ```bash
-cd day28-langchain
-pip install langchain langchain-groq python-dotenv
-python day28_langchain_basics.py
+cd day29-langchain-rag
+pip install langchain langchain-groq langchain-community langchain-huggingface langchain-text-splitters faiss-cpu sentence-transformers python-dotenv
+python langchain_rag.py
 ```
 
 ## 👤 Author
