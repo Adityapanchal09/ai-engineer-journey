@@ -343,6 +343,34 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 
 ---
 
+### Day 31: LangGraph Intro + Min Stack
+- `langgraph_intro.py` — First LangGraph program: single-node graph → two-node graph with conditional routing based on response length
+
+**LangGraph components covered:**
+- `State` (TypedDict) — shared data structure that flows through every node, all keys must be declared upfront
+- `chat_node` — Python function that reads state, calls LLM, sets `needs_summary` flag based on response length
+- `summary_node` — second node that only runs when response is long, summarizes into one sentence
+- `should_summarize()` — conditional edge function that returns `"summarize"` or `"end"` based on state
+- `add_conditional_edges()` — routes graph to different nodes based on the return value of a function
+- `graph.compile()` — locks the graph structure and makes it invokable
+- `graph.invoke({...})` — runs the full graph with initial state, returns final state
+
+**Key insights:**
+- All state keys must be in `TypedDict` or LangGraph throws `KeyError` at runtime
+- Nodes must return ALL state keys, not just the ones they update
+- LangGraph vs LangChain: LangChain = linear pipe, LangGraph = branching graph with shared state
+- n8n is a visual no-code workflow tool; LangGraph is a Python code framework — both use graph concepts but for different purposes
+
+**DSA — Stack #2:**
+- **Min Stack** (Medium) — LeetCode 155
+- Two parallel stacks: `stack` stores all values, `min_stack` stores current minimum at each push
+- `min_stack.append(min(val, min_stack[-1]))` — records the running minimum so getMin() is always O(1)
+- Key insight: when you pop the current min, `min_stack` pops too, restoring the previous minimum automatically
+
+**Concepts:** `StateGraph`, `TypedDict` for state schema, `add_node()`, `set_entry_point()`, `add_conditional_edges()`, `add_edge()`, `compile()`, `invoke()`, conditional routing via function return values, parallel stack pattern for O(1) min tracking, `min()` for running minimum
+
+---
+
 ## 📈 Progress Tracker
 
 | Day | Project | Status |
@@ -376,6 +404,7 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 | 28 | LangChain Fundamentals + Encode and Decode Strings | ✅ |
 | 29 | LangChain RAG Pipeline + Valid Sudoku | ✅ |
 | 30 | Study Notes Chatbot (Independent) + Valid Parentheses | ✅ |
+| 31 | LangGraph Intro + Min Stack | ✅ |
 
 ## 🧩 DSA Track (NeetCode 150)
 
@@ -400,6 +429,7 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 | 28 | Encode and Decode Strings | Arrays & Hashing | Medium | ✅ |
 | 29 | Valid Sudoku | Arrays & Hashing | Medium | ✅ |
 | 30 | Valid Parentheses | Stack | Easy | ✅ |
+| 31 | Min Stack | Stack | Medium | ✅ |
 
 ## 🎯 Roadmap
 
@@ -417,7 +447,7 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 - [x] Stack section — started
 - [ ] Sliding Window — remaining 2 problems
 - [ ] Stack — remaining problems (Min Stack, Daily Temperatures, etc.)
-- [ ] LangGraph intro
+- [x] LangGraph intro — nodes, state, conditional edges
 - [ ] FastAPI Authentication (API keys)
 - [ ] Docker — containerize AI API
 - [ ] ChromaDB vector database for scaling RAG
