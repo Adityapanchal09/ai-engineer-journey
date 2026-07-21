@@ -14,6 +14,7 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 - **Groq API** (qwen/qwen3-27b)
 - **FastAPI** — production AI backend
 - **LangChain** — LLM application framework
+- **LangGraph** — stateful, graph-based agent framework
 - **Streamlit** — web UI + deployment
 - **sentence-transformers** — local embeddings
 - **FAISS** — local vector store
@@ -371,6 +372,31 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 
 ---
 
+### Day 32: LangGraph ReAct Agent with Tool Chaining + Persistent Memory
+- `react_langgraph.py` — Built a LangGraph ReAct-style agent from scratch (not the prebuilt `create_react_agent`) to understand the agent loop internals
+
+**LangGraph agent components covered:**
+- **Graph structure:** `agent` node (LLM decides to call a tool or respond) → conditional edge via `tools_condition` → `tools` node (`ToolNode`) → loops back to `agent` until a final answer. Unlike Day 31's graph, this one can loop multiple times, not just branch once
+- **Tools:** `calculator`, `get_word_length`, and `web_search` (via `ddgs`, reused from the Day 16 multi-tool agent)
+- **State:** `Annotated[list, add_messages]` — a reducer that appends new messages instead of overwriting, giving the agent memory within a single run
+- **Persistent memory:** `MemorySaver` checkpointer keyed by `thread_id`, replacing manual `session_state` message tracking from earlier Streamlit projects
+
+**Key milestone:** Verified multi-hop tool chaining by asking the agent to search for a real, current fact (Vadodara's population), extract the number from unstructured search results, then feed that number into the calculator tool to double it. Agent correctly chained `web_search → calculator` across two loop iterations, and in a follow-up turn on the same thread, recalled the calculated result purely from persisted memory with no repeat tool call
+
+**Bugs hit & fixed:**
+- `ValueError: Function must have a docstring` — LangChain's `@tool` decorator requires a docstring as the tool's description; a missing/misplaced docstring broke tool registration
+- `TypeError: '_ChatModelBinding' object is not callable` — was calling `llm_with_tools(...)` directly instead of `llm_with_tools.invoke(...)`; all LangChain `Runnable` objects require `.invoke()`/`.stream()`/`.batch()` rather than direct calling
+
+**Roadmap check-in:** Cross-referenced progress against [roadmap.sh's AI Engineer path](https://roadmap.sh/ai-engineer) — core LLM app-dev spine (models → prompting → embeddings → RAG → agents) is essentially complete. Remaining gaps: AI Safety basics, fine-tuning exposure, Multimodal AI
+
+**DSA — Stack #3:**
+- **[FILL IN: problem name]** (Difficulty) — LeetCode [#]
+- [key approach/insight]
+
+**Concepts:** `tools_condition`, `ToolNode`, agent loop (multi-hop, not single-branch), `add_messages` reducer, `MemorySaver` + `thread_id` persistence, real tool chaining across unstructured output, `Runnable.invoke()` pattern
+
+---
+
 ## 📈 Progress Tracker
 
 | Day | Project | Status |
@@ -405,6 +431,7 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 | 29 | LangChain RAG Pipeline + Valid Sudoku | ✅ |
 | 30 | Study Notes Chatbot (Independent) + Valid Parentheses | ✅ |
 | 31 | LangGraph Intro + Min Stack | ✅ |
+| 32 | LangGraph ReAct Agent (Tool Chaining + Memory) | ✅ |
 
 ## 🧩 DSA Track (NeetCode 150)
 
@@ -430,6 +457,7 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 | 29 | Valid Sudoku | Arrays & Hashing | Medium | ✅ |
 | 30 | Valid Parentheses | Stack | Easy | ✅ |
 | 31 | Min Stack | Stack | Medium | ✅ |
+| 32 | Evaluate Reverse Polish Notation | Stack | Medium | ✅ |
 
 ## 🎯 Roadmap
 
@@ -446,13 +474,16 @@ A daily learning log documenting my path to becoming an AI Engineer — building
 - [x] Arrays & Hashing — complete ✅
 - [x] Stack section — started
 - [ ] Sliding Window — remaining 2 problems
-- [ ] Stack — remaining problems (Min Stack, Daily Temperatures, etc.)
+- [ ] Stack — remaining problems (Daily Temperatures, etc.)
 - [x] LangGraph intro — nodes, state, conditional edges
+- [x] LangGraph agent loop — tool calling, multi-hop tool chaining, `MemorySaver` persistence
 - [ ] FastAPI Authentication (API keys)
 - [ ] Docker — containerize AI API
 - [ ] ChromaDB vector database for scaling RAG
 - [ ] PDF support for RAG
+- [ ] AI Safety basics (prompt injection, adversarial testing, moderation APIs)
 - [ ] Fine-tuning basics
+- [ ] Multimodal AI (Vision, Whisper, TTS/STT)
 - [ ] Portfolio polish
 
 ## 🚀 Setup
@@ -478,6 +509,13 @@ For LangChain / RAG:
 cd day29-langchain-rag
 pip install langchain langchain-groq langchain-community langchain-huggingface langchain-text-splitters faiss-cpu sentence-transformers python-dotenv
 python langchain_rag.py
+```
+
+For LangGraph agent (Day 32):
+```bash
+cd langgraph
+pip install langgraph langchain-groq langchain-core ddgs python-dotenv
+python react_langgraph.py
 ```
 
 ## 👤 Author
